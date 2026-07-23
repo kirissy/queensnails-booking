@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { SignOutButton } from "@/components/admin/SignOutButton";
 
@@ -9,8 +10,11 @@ export default function AdminDashboardLayout({
   return (
     <div className="flex flex-1 flex-col bg-cream">
       <header className="flex items-center justify-between border-b border-nude/60 px-6 py-4 sm:px-8">
-        <span className="font-serif text-xl text-charcoal">
-          queensnails <span className="text-charcoal/40">admin</span>
+        <span className="flex items-center gap-2">
+          <Image src="/icon.png" alt="" width={512} height={512} className="h-7 w-7" />
+          <span className="font-serif text-xl text-charcoal">
+            queensnails <span className="text-charcoal/40">admin</span>
+          </span>
         </span>
         <SignOutButton />
       </header>

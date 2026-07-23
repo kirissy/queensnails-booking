@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -34,9 +35,15 @@ export default function AdminLoginPage() {
         onSubmit={handleSubmit}
         className="flex w-full max-w-sm flex-col gap-5 rounded-3xl border border-nude/60 bg-cream-dark/30 px-8 py-10"
       >
-        <div className="text-center">
-          <p className="font-serif text-2xl text-charcoal">queensnails</p>
-          <p className="mt-1 font-sans text-sm text-charcoal/60">
+        <div className="flex flex-col items-center text-center">
+          <Image
+            src="/logo.png"
+            alt="queensnails"
+            width={1225}
+            height={313}
+            className="h-8 w-auto"
+          />
+          <p className="mt-2 font-sans text-sm text-charcoal/60">
             Studio admin
           </p>
         </div>

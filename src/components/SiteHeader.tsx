@@ -1,13 +1,26 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export function SiteHeader() {
   return (
     <header className="flex items-center justify-between px-6 py-6 sm:px-10">
-      <Link
-        href="/"
-        className="font-serif text-2xl tracking-wide text-charcoal"
-      >
-        queensnails
+      <Link href="/" className="shrink-0">
+        <Image
+          src="/logo.png"
+          alt="queensnails — private nail studio"
+          width={1225}
+          height={313}
+          priority
+          className="hidden h-9 w-auto sm:block"
+        />
+        <Image
+          src="/icon.png"
+          alt="queensnails"
+          width={512}
+          height={512}
+          priority
+          className="h-9 w-9 sm:hidden"
+        />
       </Link>
       <nav className="flex items-center gap-6">
         <Link
