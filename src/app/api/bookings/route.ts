@@ -63,6 +63,18 @@ export async function POST(request: Request) {
   const supabase = createAdminClient();
   const bookingId = crypto.randomUUID();
 
+  // Lazily release a stale hold on this exact slot before claiming it — this
+  // is what actually enforces the 60-minute hold window (see HOLD_WINDOW_MINUTES),
+  // not the daily cron sweep, which only exists for bookkeeping on Vercel's
+  // Hobby plan (cron can't run more often than once a day there).
+  await supabase
+    .from("bookings")
+    .update({ status: "expired" })
+    .eq("booking_date", parsed.data.date)
+    .eq("booking_time", parsed.data.time)
+    .eq("status", "pending_verification")
+    .lt("hold_expires_at", new Date().toISOString());
+
   const proofExt = proofFile.name.split(".").pop() || "jpg";
   const proofPath = `${bookingId}/proof.${proofExt}`;
   const { error: proofUploadError } = await supabase.storage

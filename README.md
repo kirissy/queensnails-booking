@@ -48,10 +48,10 @@ No WhatsApp Business API integration is built — per the spec, click-to-chat (`
 
 ### Scheduled jobs
 
-Two routes need to run on a schedule and aren't triggered by user traffic:
+Two routes run on a daily schedule (Vercel's Hobby plan doesn't allow cron more often than once a day):
 
-- `GET /api/cron/expire-holds` — releases slots held by customers who never uploaded proof (every ~10 min)
-- `GET /api/cron/reminders` — emails customers with a confirmed booking the next day (once daily)
+- `GET /api/cron/expire-holds` — bookkeeping only. The 60-minute abandoned-hold window is actually enforced lazily in `/api/bookings` the moment someone else tries to claim the same slot, so correctness never depends on this cron's cadence — it just flips stale rows to `expired` so they don't linger in the admin queue.
+- `GET /api/cron/reminders` — emails customers with a confirmed booking the next day.
 
 `vercel.json` already declares both as Vercel Cron jobs. Set `CRON_SECRET` to any random string — Vercel sends it automatically as `Authorization: Bearer $CRON_SECRET`. On another host, call these on the same schedule with that header yourself.
 

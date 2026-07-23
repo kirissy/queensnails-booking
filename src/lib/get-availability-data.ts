@@ -33,7 +33,11 @@ export async function getAvailabilityData(): Promise<AvailabilityData> {
     supabase
       .from("bookings")
       .select("booking_date, booking_time, status")
-      .in("status", ["pending_verification", "confirmed"]),
+      // Confirmed bookings always block; pending ones only block while their
+      // hold hasn't lapsed — a stale hold isn't flipped to 'expired' until
+      // someone actually tries to claim that slot (see /api/bookings), so we
+      // filter it out here too rather than showing it as unavailable.
+      .or(`status.eq.confirmed,and(status.eq.pending_verification,hold_expires_at.gt.${now.toISOString()})`),
     isGoogleConfigured
       ? getGoogleBlockedSlots(now, windowEnd)
       : Promise.resolve({} as Record<string, (typeof SLOT_TIMES)[number][]>),

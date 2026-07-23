@@ -20,6 +20,10 @@ export default async function VerificationQueuePage() {
       "id, created_at, customer_name, customer_phone, treatment_name, extension_name, booking_date, booking_time, deposit_amount, proof_photo_path"
     )
     .eq("status", "pending_verification")
+    // Excludes holds whose 60-minute window already lapsed but haven't been
+    // flipped to 'expired' yet (that only happens lazily, when someone else
+    // tries to claim the same slot — see /api/bookings).
+    .gt("hold_expires_at", new Date().toISOString())
     .order("created_at", { ascending: true });
 
   const cards = await Promise.all(
