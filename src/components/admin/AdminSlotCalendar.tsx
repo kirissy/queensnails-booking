@@ -109,7 +109,7 @@ export function AdminSlotCalendar({ initialOverrides }: { initialOverrides: DayO
                     <span
                       key={t}
                       className={`h-1 w-1 rounded-full ${
-                        open.includes(t) ? (isSelected ? "bg-cream" : "bg-rose-gold") : "bg-charcoal/15"
+                        open.includes(t) ? (isSelected ? "bg-cream" : "bg-gold") : "bg-charcoal/15"
                       }`}
                     />
                   ))}

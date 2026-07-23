@@ -138,7 +138,7 @@ export function AvailabilityCalendar({
                         s.status === "open"
                           ? isSelected
                             ? "bg-cream"
-                            : "bg-rose-gold"
+                            : "bg-gold"
                           : "bg-charcoal/15"
                       }`}
                     />

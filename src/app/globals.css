@@ -9,8 +9,11 @@
   --color-nude: #e8d5c8;
   --color-blush: #f3dcdc;
   --color-blush-dark: #eac3c3;
-  --color-rose-gold: #c9a48c;
-  --color-rose-gold-dark: #b08968;
+  /* Coral + gold sampled from the queensnails logo (wordmark + crown mark). */
+  --color-rose-gold: #ef8c82;
+  --color-rose-gold-dark: #dd6f63;
+  --color-gold: #f6be86;
+  --color-gold-dark: #eda860;
   --color-charcoal: #2b2320;
   --color-burgundy: #6e2c3b;
 }
@@ -26,10 +29,12 @@
   --color-blush-dark: var(--color-blush-dark);
   --color-rose-gold: var(--color-rose-gold);
   --color-rose-gold-dark: var(--color-rose-gold-dark);
+  --color-gold: var(--color-gold);
+  --color-gold-dark: var(--color-gold-dark);
   --color-charcoal: var(--color-charcoal);
   --color-burgundy: var(--color-burgundy);
 
-  --font-serif: var(--font-cormorant);
+  --font-serif: var(--font-lora);
   --font-sans: var(--font-jost);
 }
 
