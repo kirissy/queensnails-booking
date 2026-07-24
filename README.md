@@ -42,6 +42,14 @@ Without this, bookings are still confirmed and emailed — they just don't creat
 
 Without this, emails are skipped and logged to the server console instead — the booking flow itself doesn't depend on it.
 
+### Instagram (optional — homepage post feed)
+
+1. Convert the studio's Instagram account to a professional (Business or Creator) account if it isn't already.
+2. Create a Meta Developer app with the Instagram API product and generate a long-lived access token for that account — see [Instagram API with Instagram Login](https://developers.facebook.com/docs/instagram-platform/instagram-api-with-instagram-login).
+3. Fill in `INSTAGRAM_ACCESS_TOKEN`.
+
+Without this, the homepage shows placeholder tiles in the brand palette instead of real posts (`src/lib/instagram.ts`) — everything else on the page still works. Long-lived tokens expire after 60 days and need refreshing; there's no refresh flow built yet since this needs a real token to test against.
+
 ### WhatsApp
 
 No WhatsApp Business API integration is built — per the spec, click-to-chat (`wa.me`) links are used instead, both for customers messaging the studio and for the owner messaging customers from the admin dashboard. No credentials needed.
@@ -63,3 +71,5 @@ Two routes run on a daily schedule (Vercel's Hobby plan doesn't allow cron more 
 - `src/app/book/` — the customer booking wizard (service → slot → details → policy → payment/proof → confirmation).
 - `src/app/admin/` — the owner's dashboard: deposit-verification queue (`/admin`, the default view), bookings list, slot/calendar controls, all behind Supabase Auth (`src/proxy.ts` gates `/admin/*`).
 - `supabase/migrations/` — schema: `bookings`, `day_overrides`, `studio_settings`, storage bucket for proof-of-payment uploads.
+- `src/lib/instagram.ts` — Instagram Graph API fetcher for the homepage post feed.
+- `public/logo.png` / `public/logo-white.png`, `public/icon.png` / `public/icon-white.png` — the real logo, trimmed and squared from the owner's source files; the white variants are derived from the same alpha channel for use on the burgundy header/footer.

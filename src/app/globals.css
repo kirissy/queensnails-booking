@@ -1,23 +1,22 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fbf6f1;
+  --background: #fffbf9;
   --foreground: #2b2320;
 
-  --color-cream: #fbf6f1;
+  --color-cream: #fffbf9;
   --color-cream-dark: #f2e9e0;
   --color-nude: #e8d5c8;
   --color-blush: #f3dcdc;
   --color-blush-dark: #eac3c3;
-  /* Coral + gold sampled from the queensnails logo (wordmark + crown mark). */
-  --color-rose-gold: #ef8c82;
+  /* Palette aligned to the Figma design system (queensnails file) — coral is
+     brand/primary-pink/400, burgundy is brand/primary-pink/800. */
+  --color-rose-gold: #f48e88;
   --color-rose-gold-dark: #dd6f63;
   --color-gold: #f6be86;
   --color-gold-dark: #eda860;
   --color-charcoal: #2b2320;
-  --color-burgundy: #6e2c3b;
-  /* Added as a richer anchor tone for full-bleed statement sections — the
-     rest of the palette is fairly light, this gives one deeper block. */
+  --color-burgundy: #691b11;
   --color-clay: #c17a6c;
   --color-clay-dark: #a8624f;
 }
@@ -40,8 +39,8 @@
   --color-clay: var(--color-clay);
   --color-clay-dark: var(--color-clay-dark);
 
-  --font-serif: var(--font-lora);
-  --font-sans: var(--font-jost);
+  --font-serif: var(--font-inter);
+  --font-sans: var(--font-inter);
 }
 
 body {
