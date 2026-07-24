@@ -19,7 +19,9 @@ export function SlotStep({ date, time, availability, onChange, onNext, onBack }:
           Choose a Date &amp; Time
         </h2>
         <p className="mt-1 font-sans text-sm text-charcoal/60">
-          Closed Sundays. Up to two slots a day, 11:00 &amp; 18:00 WIB.
+          Closed Sundays. One booking a day, at 11:00, 15:00 or 18:00 WIB.
+          Same-day booking isn&apos;t available — please book at least a day
+          ahead.
         </p>
       </div>
 

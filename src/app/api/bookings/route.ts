@@ -65,15 +65,17 @@ export async function POST(request: Request) {
   const supabase = createAdminClient();
   const bookingId = crypto.randomUUID();
 
-  // Lazily release a stale hold on this exact slot before claiming it — this
-  // is what actually enforces the 60-minute hold window (see HOLD_WINDOW_MINUTES),
+  // Lazily release a stale hold on this day before claiming it — this is
+  // what actually enforces the 60-minute hold window (see HOLD_WINDOW_MINUTES),
   // not the daily cron sweep, which only exists for bookkeeping on Vercel's
-  // Hobby plan (cron can't run more often than once a day there).
+  // Hobby plan (cron can't run more often than once a day there). Matches on
+  // the whole day, not just this exact time, since only one booking per day
+  // is allowed at all — a stale hold on any slot that day would otherwise
+  // still block this insert.
   await supabase
     .from("bookings")
     .update({ status: "expired" })
     .eq("booking_date", parsed.data.date)
-    .eq("booking_time", parsed.data.time)
     .eq("status", "pending_verification")
     .lt("hold_expires_at", new Date().toISOString());
 
@@ -119,10 +121,10 @@ export async function POST(request: Request) {
   });
 
   if (insertError) {
-    // Unique violation on (booking_date, booking_time) among held/confirmed rows.
+    // Unique violation on booking_date among held/confirmed rows — only one booking per day.
     if (insertError.code === "23505") {
       return NextResponse.json(
-        { error: "Sorry, that slot was just taken. Please pick another." },
+        { error: "Sorry, that day was just booked. Please pick another." },
         { status: 409 }
       );
     }

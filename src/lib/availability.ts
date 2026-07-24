@@ -2,7 +2,7 @@ import { formatInTimeZone, toZonedTime } from "date-fns-tz";
 
 export const STUDIO_TIMEZONE = "Asia/Jakarta";
 
-export const SLOT_TIMES = ["11:00", "18:00"] as const;
+export const SLOT_TIMES = ["11:00", "15:00", "18:00"] as const;
 export type SlotTime = (typeof SLOT_TIMES)[number];
 
 /** yyyy-MM-dd, always read in the studio's timezone regardless of caller's clock. */
@@ -23,8 +23,9 @@ export function parseDateKey(key: DateKey): Date {
 }
 
 /**
- * Owner's per-day slot control. A date with no entry defaults to both slots
- * open (the studio's normal capacity) unless it's a Sunday.
+ * Owner's per-day slot control. A date with no entry defaults to all slots
+ * open (the studio's normal capacity) unless it's a Sunday. Only one of
+ * these can actually be booked per day — see getDayAvailability.
  */
 export type DayOverride = SlotTime[] | "closed";
 export type DayOverrides = Record<DateKey, DayOverride>;
@@ -55,22 +56,24 @@ export function getDayAvailability(
 ): DayAvailability {
   const key = dateKey(date);
   const sunday = isSunday(date);
-  const isPast = key < dateKey(now);
+  // Same-day booking isn't allowed — customers need at least 1 day's notice.
+  const isPast = key <= dateKey(now);
 
   const override = overrides[key];
   const ownerOpenSlots: readonly SlotTime[] =
     override === "closed" ? [] : override ?? SLOT_TIMES;
 
-  const bookedTimes = new Set(
-    bookings.filter((b) => b.date === key).map((b) => b.time)
-  );
+  const bookingsToday = bookings.filter((b) => b.date === key);
+  const bookedTimes = new Set(bookingsToday.map((b) => b.time));
+  // Only one booking per day total — once any slot is taken, the rest of the day closes too.
+  const dayIsFull = bookingsToday.length > 0;
 
   const slots: DayAvailability["slots"] = SLOT_TIMES.map((time) => {
-    if (sunday || isPast || !ownerOpenSlots.includes(time)) {
-      return { time, status: "closed" };
-    }
     if (bookedTimes.has(time)) {
       return { time, status: "booked" };
+    }
+    if (sunday || isPast || dayIsFull || !ownerOpenSlots.includes(time)) {
+      return { time, status: "closed" };
     }
     return { time, status: "open" };
   });

@@ -38,8 +38,9 @@ export default async function SlotsPage({
       <div>
         <h1 className="font-serif text-2xl text-charcoal">Slots &amp; Calendar</h1>
         <p className="mt-1 font-sans text-sm text-charcoal/60">
-          Tap a date to toggle which of the 11:00 / 18:00 slots are open, or
-          close the whole day.
+          Tap a date to toggle which of the 11:00 / 15:00 / 18:00 slots are
+          open, or close the whole day. Only one booking is allowed per day —
+          once a customer books any slot, the rest close automatically.
         </p>
       </div>
 

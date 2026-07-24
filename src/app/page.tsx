@@ -65,7 +65,7 @@ export default async function Home() {
               <p className="mt-3 font-sans text-base text-charcoal/80">
                 Monday – Saturday
                 <br />
-                Two daily slots: 11:00 &amp; 18:00 WIB
+                One booking a day: 11:00, 15:00 or 18:00 WIB
               </p>
               <span className="mt-3 inline-block bg-burgundy px-3 py-1.5 font-sans text-sm font-bold text-white">
                 By appointment only

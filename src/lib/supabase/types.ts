@@ -7,7 +7,7 @@ export type BookingStatus =
   | "no_show"
   | "cancelled";
 
-export type SlotTimeEnum = "11:00" | "18:00";
+export type SlotTimeEnum = "11:00" | "15:00" | "18:00";
 
 export type BookingRow = {
   id: string;

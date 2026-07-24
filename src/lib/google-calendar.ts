@@ -15,6 +15,7 @@ export const isGoogleConfigured = Boolean(
 /** Slot durations aren't tracked precisely (2-4h, varies by design) — these are the widest candidate windows used only to detect Google Calendar overlaps. */
 const SLOT_WINDOWS: Record<SlotTime, { startHour: number; endHour: number }> = {
   "11:00": { startHour: 11, endHour: 15 },
+  "15:00": { startHour: 15, endHour: 19 },
   "18:00": { startHour: 18, endHour: 22 },
 };
 

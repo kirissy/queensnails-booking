@@ -16,7 +16,8 @@ export const MOCK_DAY_OVERRIDES: DayOverrides = {
 };
 
 export const MOCK_BOOKINGS: BookingStub[] = [
+  // Only one booking per day is allowed — each entry here is a different day.
   { date: dateKey(daysFromNow(2)), time: "18:00", status: "confirmed" },
-  { date: dateKey(daysFromNow(2)), time: "11:00", status: "pending" },
+  { date: dateKey(daysFromNow(5)), time: "15:00", status: "pending" },
   { date: dateKey(daysFromNow(9)), time: "11:00", status: "confirmed" },
 ];
