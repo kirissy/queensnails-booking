@@ -17,7 +17,7 @@ export default async function Home() {
 
       <main className="flex flex-1 flex-col gap-20 px-6 py-2 sm:gap-32 sm:px-10">
         {/* Hero */}
-        <section className="relative min-h-[560px] w-full overflow-hidden rounded-2xl sm:min-h-[700px] lg:min-h-[850px]">
+        <section className="relative h-[calc(100dvh-32px)] w-full overflow-hidden rounded-2xl">
           <Image
             src="/hero.png"
             alt="Nail art by queensnails — red gel polish with pearl and chrome accents"
