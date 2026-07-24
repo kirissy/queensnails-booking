@@ -3,8 +3,8 @@ import Link from "next/link";
 
 export function SiteHeader() {
   return (
-    <header className="px-6 py-6 sm:px-10">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between rounded-full bg-burgundy px-5 py-3 sm:px-8 sm:py-4">
+    <header className="px-8 py-6">
+      <div className="flex w-full items-center justify-between rounded-full bg-burgundy px-5 py-3 sm:px-8 sm:py-4">
         <Link href="/" className="shrink-0">
           <Image
             src="/logo-white.png"
@@ -26,7 +26,7 @@ export function SiteHeader() {
         <nav className="flex items-center gap-2 sm:gap-4">
           <Link
             href="/services"
-            className="rounded-full px-3 py-2 font-sans text-sm font-semibold text-rose-gold transition-colors hover:text-cream sm:px-6 sm:py-3 sm:text-lg"
+            className="rounded-full border-2 border-cream px-3 py-1.5 font-sans text-sm font-semibold text-cream transition-colors hover:bg-cream/10 sm:px-6 sm:py-3 sm:text-lg"
           >
             Pricelist
           </Link>
