@@ -137,10 +137,11 @@ export default function ServicesPage() {
             Want something custom?
           </h2>
           <p className="mx-auto mt-2 max-w-md font-sans text-sm text-charcoal/70">
-            Classes and custom premium press-on nail orders, or detailed
-            &ldquo;Other Design&rdquo; art on all 10 nails, are handled
+            Classes and custom premium press-on nail orders are handled
             directly — message us on Instagram to confirm details and price
-            before booking.
+            before booking. Want detailed &ldquo;Other Design&rdquo; art
+            instead? You can book that online — we&apos;ll confirm the price
+            with you afterward.
           </p>
           <a
             href="https://instagram.com/queensnailsid"

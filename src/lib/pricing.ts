@@ -61,8 +61,8 @@ export const NAIL_TREATMENTS: NailTreatment[] = [
     id: "other-design",
     name: "Other Design",
     priceMin: 0,
-    note: "Bring references, detailed art on all 10 nails — message us to confirm price before booking",
-    bookable: false,
+    note: "Bring references, detailed art on all 10 nails — message us to confirm price after booking",
+    bookable: true,
   },
 ];
 

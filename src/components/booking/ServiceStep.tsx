@@ -64,30 +64,9 @@ export function ServiceStep({
                 </p>
               )}
             </div>
-            {!t.bookable && (
-              <p className="shrink-0 whitespace-nowrap font-sans text-sm text-rose-gold-dark">
-                Message us
-              </p>
-            )}
           </button>
         ))}
       </div>
-
-      {treatmentId === "other-design" && (
-        <p className="rounded-xl bg-blush/40 px-4 py-3 font-sans text-xs text-charcoal/70">
-          &ldquo;Other Design&rdquo; needs a quick chat to confirm details —
-          message{" "}
-          <a
-            href="https://instagram.com/queensnailsid"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline"
-          >
-            @queensnailsid
-          </a>{" "}
-          on Instagram instead of booking online.
-        </p>
-      )}
 
       <div>
         <h3 className="font-serif text-lg text-charcoal">
