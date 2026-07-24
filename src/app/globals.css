@@ -16,6 +16,10 @@
   --color-gold-dark: #eda860;
   --color-charcoal: #2b2320;
   --color-burgundy: #6e2c3b;
+  /* Added as a richer anchor tone for full-bleed statement sections — the
+     rest of the palette is fairly light, this gives one deeper block. */
+  --color-clay: #c17a6c;
+  --color-clay-dark: #a8624f;
 }
 
 @theme inline {
@@ -33,6 +37,8 @@
   --color-gold-dark: var(--color-gold-dark);
   --color-charcoal: var(--color-charcoal);
   --color-burgundy: var(--color-burgundy);
+  --color-clay: var(--color-clay);
+  --color-clay-dark: var(--color-clay-dark);
 
   --font-serif: var(--font-lora);
   --font-sans: var(--font-jost);

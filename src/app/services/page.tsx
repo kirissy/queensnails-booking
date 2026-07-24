@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
-import { SiteFooter } from "@/components/SiteFooter";
+import { SiteFooterExpanded } from "@/components/SiteFooterExpanded";
 import {
   NAIL_TREATMENTS,
   EXTENSIONS,
@@ -162,7 +162,7 @@ export default function ServicesPage() {
         </div>
       </main>
 
-      <SiteFooter />
+      <SiteFooterExpanded />
     </div>
   );
 }
