@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { NAIL_TREATMENTS, EXTENSIONS } from "@/lib/pricing";
+import { PricelistModal } from "@/components/PricelistModal";
 
 type Props = {
   treatmentId: string | null;
@@ -32,10 +32,7 @@ export function ServiceStep({
         <p className="mt-1 font-sans text-sm text-charcoal/60">
           Pick one base service — this just lets us know what to prepare for.
           You can still change your mind with the owner in person. See the{" "}
-          <Link href="/services" className="underline hover:text-burgundy">
-            full pricelist
-          </Link>
-          .
+          <PricelistModal className="underline hover:text-burgundy" />.
         </p>
       </div>
 
@@ -137,23 +134,11 @@ export function ServiceStep({
           <p className="mt-2 font-sans text-xs text-charcoal/50">
             Noted — removal fees depend on your current nails and are
             confirmed with the owner. See the{" "}
-            <Link href="/services" className="underline hover:text-burgundy">
-              full pricelist
-            </Link>{" "}
-            for reference.
+            <PricelistModal className="underline hover:text-burgundy" /> for
+            reference.
           </p>
         )}
       </div>
-
-      <p className="font-sans text-xs text-charcoal/50">
-        Prices depend on your chosen design and current nails, and are
-        confirmed with the owner — see the{" "}
-        <Link href="/services" className="underline hover:text-burgundy">
-          full pricelist
-        </Link>{" "}
-        for reference. Only the Rp 50,000 deposit is due now; the rest is
-        settled in person.
-      </p>
 
       <button
         type="button"
