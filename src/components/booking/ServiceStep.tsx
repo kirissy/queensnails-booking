@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { NAIL_TREATMENTS, EXTENSIONS, formatIDR } from "@/lib/pricing";
+import { NAIL_TREATMENTS, EXTENSIONS } from "@/lib/pricing";
 
 type Props = {
   treatmentId: string | null;
@@ -10,8 +10,6 @@ type Props = {
 
 export function ServiceStep({ treatmentId, extensionId, onChange, onNext }: Props) {
   const treatment = NAIL_TREATMENTS.find((t) => t.id === treatmentId) ?? null;
-  const extension = EXTENSIONS.find((e) => e.id === extensionId) ?? null;
-  const total = (treatment?.priceMin ?? 0) + (extension?.price ?? 0);
   const canProceed = !!treatment && treatment.bookable;
 
   return (
@@ -21,10 +19,12 @@ export function ServiceStep({ treatmentId, extensionId, onChange, onNext }: Prop
           Choose a Nail Treatment
         </h2>
         <p className="mt-1 font-sans text-sm text-charcoal/60">
-          Pick one base service.{" "}
+          Pick one base service — this just lets us know what to prepare for.
+          You can still change your mind with the owner in person. See the{" "}
           <Link href="/services" className="underline hover:text-burgundy">
-            Full pricelist
+            full pricelist
           </Link>
+          .
         </p>
       </div>
 
@@ -53,20 +53,18 @@ export function ServiceStep({ treatmentId, extensionId, onChange, onNext }: Prop
                 </p>
               )}
             </div>
-            <p className="shrink-0 whitespace-nowrap font-sans text-sm text-rose-gold-dark">
-              {t.bookable
-                ? t.priceMax
-                  ? `${formatIDR(t.priceMin)}+`
-                  : formatIDR(t.priceMin)
-                : "Message us"}
-            </p>
+            {!t.bookable && (
+              <p className="shrink-0 whitespace-nowrap font-sans text-sm text-rose-gold-dark">
+                Message us
+              </p>
+            )}
           </button>
         ))}
       </div>
 
       {treatmentId === "other-design" && (
         <p className="rounded-xl bg-blush/40 px-4 py-3 font-sans text-xs text-charcoal/70">
-          &ldquo;Other Design&rdquo; needs a quick chat to confirm pricing —
+          &ldquo;Other Design&rdquo; needs a quick chat to confirm details —
           message{" "}
           <a
             href="https://instagram.com/queensnailsid"
@@ -104,35 +102,27 @@ export function ServiceStep({ treatmentId, extensionId, onChange, onNext }: Prop
               key={e.id}
               type="button"
               onClick={() => onChange({ extensionId: e.id })}
-              className={`flex items-center justify-between gap-4 rounded-xl border px-4 py-2.5 text-left transition-colors ${
+              className={`rounded-xl border px-4 py-2.5 text-left font-sans text-sm transition-colors ${
                 extensionId === e.id
                   ? "border-rose-gold bg-blush/40"
                   : "border-nude/60 hover:bg-blush/20"
               }`}
             >
-              <p className="font-sans text-sm text-charcoal">{e.name}</p>
-              <p className="shrink-0 whitespace-nowrap font-sans text-sm text-rose-gold-dark">
-                +{formatIDR(e.price)}
-                {e.unit === "per-nail" ? " / nail" : ""}
-              </p>
+              <p className="text-charcoal">{e.name}</p>
             </button>
           ))}
         </div>
       </div>
 
       <p className="font-sans text-xs text-charcoal/50">
-        Removal fees may apply depending on your current nails — confirmed
-        with the owner and settled with your remaining balance in person.
+        Prices depend on your chosen design and current nails, and are
+        confirmed with the owner — see the{" "}
+        <Link href="/services" className="underline hover:text-burgundy">
+          full pricelist
+        </Link>{" "}
+        for reference. Only the Rp 50,000 deposit is due now; the rest is
+        settled in person.
       </p>
-
-      <div className="flex items-center justify-between rounded-xl bg-charcoal px-5 py-4">
-        <span className="font-sans text-sm text-cream/80">
-          Running total
-        </span>
-        <span className="font-serif text-xl text-cream">
-          {formatIDR(total)}
-        </span>
-      </div>
 
       <button
         type="button"

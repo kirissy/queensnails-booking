@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { format } from "date-fns";
-import { NAIL_TREATMENTS, EXTENSIONS, formatIDR } from "@/lib/pricing";
+import { NAIL_TREATMENTS, EXTENSIONS, DEPOSIT_AMOUNT, formatIDR } from "@/lib/pricing";
 import { STUDIO_ADDRESS } from "@/lib/policy";
 import { parseDateKey } from "@/lib/availability";
 import type { BookingDraft } from "@/lib/booking-draft";
@@ -12,7 +12,6 @@ type Props = {
 export function ConfirmationStep({ draft }: Props) {
   const treatment = NAIL_TREATMENTS.find((t) => t.id === draft.treatmentId);
   const extension = EXTENSIONS.find((e) => e.id === draft.extensionId);
-  const total = (treatment?.priceMin ?? 0) + (extension?.price ?? 0);
 
   return (
     <div className="flex flex-col gap-6 text-center">
@@ -50,10 +49,10 @@ export function ConfirmationStep({ draft }: Props) {
         )}
         <div className="flex items-center justify-between">
           <span className="font-sans text-sm text-charcoal/70">
-            Estimated total
+            Deposit paid
           </span>
           <span className="font-sans text-sm font-medium text-charcoal">
-            {formatIDR(total)}
+            {formatIDR(DEPOSIT_AMOUNT)}
           </span>
         </div>
       </div>
@@ -63,9 +62,11 @@ export function ConfirmationStep({ draft }: Props) {
       </p>
 
       <p className="font-sans text-xs text-charcoal/50">
-        Once confirmed, we&apos;ll notify you by email with your appointment
-        details and remaining balance due. Need to change something? Contact
-        the studio directly on WhatsApp or Instagram — bookings can&apos;t be
+        The service above is just a note for us to prepare — final design and
+        price are confirmed with the owner in person, and the remaining
+        balance is paid then. Once your booking is confirmed, we&apos;ll
+        notify you by email. Need to change something? Contact the studio
+        directly on WhatsApp or Instagram — bookings can&apos;t be
         self-cancelled per our policy.
       </p>
 
