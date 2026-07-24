@@ -17,7 +17,7 @@ export default async function VerificationQueuePage() {
   const { data: bookings } = await supabase
     .from("bookings")
     .select(
-      "id, created_at, customer_name, customer_phone, treatment_name, extension_name, booking_date, booking_time, deposit_amount, proof_photo_path"
+      "id, created_at, customer_name, customer_phone, treatment_name, extension_name, removal_requested, booking_date, booking_time, deposit_amount, proof_photo_path"
     )
     .eq("status", "pending_verification")
     // Excludes holds whose 60-minute window already lapsed but haven't been
@@ -63,6 +63,7 @@ export default async function VerificationQueuePage() {
                 ? `${b.treatment_name} + ${b.extension_name}`
                 : b.treatment_name
             }
+            removalRequested={b.removal_requested}
             date={b.booking_date}
             time={b.booking_time}
             depositAmount={b.deposit_amount}

@@ -33,6 +33,7 @@ export type BookingRow = {
   verified_by: string | null;
   rejection_reason: string | null;
   balance_paid: boolean;
+  removal_requested: boolean;
   removal_surcharge: number | null;
   admin_notes: string | null;
   google_calendar_event_id: string | null;

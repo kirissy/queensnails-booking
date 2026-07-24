@@ -55,6 +55,14 @@ export function ConfirmationStep({ draft }: Props) {
             {formatIDR(DEPOSIT_AMOUNT)}
           </span>
         </div>
+        {draft.removalRequested && (
+          <div className="flex items-center justify-between">
+            <span className="font-sans text-sm text-charcoal/70">Removal</span>
+            <span className="font-sans text-sm font-medium text-charcoal">
+              Requested
+            </span>
+          </div>
+        )}
       </div>
 
       <p className="font-sans text-xs text-charcoal/50">

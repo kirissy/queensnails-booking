@@ -9,6 +9,7 @@ import { notifyOwnerOfNewProof, notifyCustomerProofReceived } from "@/lib/notifi
 const fieldsSchema = z.object({
   treatmentId: z.string(),
   extensionId: z.string().optional(),
+  removalRequested: z.enum(["true", "false"]).default("false"),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   time: z.enum(SLOT_TIMES),
   name: z.string().trim().min(2),
@@ -29,6 +30,7 @@ export async function POST(request: Request) {
   const parsed = fieldsSchema.safeParse({
     treatmentId: formData.get("treatmentId"),
     extensionId: formData.get("extensionId") || undefined,
+    removalRequested: formData.get("removalRequested") || undefined,
     date: formData.get("date"),
     time: formData.get("time"),
     name: formData.get("name"),
@@ -110,6 +112,7 @@ export async function POST(request: Request) {
     customer_phone: parsed.data.phone,
     customer_email: parsed.data.email,
     customer_notes: parsed.data.notes ?? "",
+    removal_requested: parsed.data.removalRequested === "true",
     reference_photo_path: referencePhotoPath,
     deposit_amount: DEPOSIT_AMOUNT,
     proof_photo_path: proofPath,

@@ -10,6 +10,7 @@ type Props = {
   customerName: string;
   customerPhone: string;
   service: string;
+  removalRequested: boolean;
   date: string;
   time: string;
   depositAmount: number;
@@ -22,6 +23,7 @@ export function VerificationCard({
   customerName,
   customerPhone,
   service,
+  removalRequested,
   date,
   time,
   depositAmount,
@@ -77,6 +79,11 @@ export function VerificationCard({
         <p className="font-sans text-sm text-charcoal/70">
           {date} · {time} WIB
         </p>
+        {removalRequested && (
+          <span className="w-fit rounded-full bg-burgundy/10 px-2.5 py-1 font-sans text-xs font-medium text-burgundy">
+            Removal requested
+          </span>
+        )}
         <p className="font-sans text-sm font-medium text-rose-gold-dark">
           Deposit: {formatIDR(depositAmount)}
         </p>

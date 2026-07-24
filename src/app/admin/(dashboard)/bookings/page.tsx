@@ -16,7 +16,7 @@ export default async function BookingsPage() {
   const { data: bookings } = await supabase
     .from("bookings")
     .select(
-      "id, customer_name, customer_phone, customer_email, treatment_name, extension_name, booking_date, booking_time, status, balance_paid, customer_notes"
+      "id, customer_name, customer_phone, customer_email, treatment_name, extension_name, removal_requested, booking_date, booking_time, status, balance_paid, customer_notes"
     )
     .in("status", ["confirmed", "completed", "no_show", "cancelled", "rejected", "expired"])
     .order("booking_date", { ascending: true });
@@ -45,6 +45,7 @@ export default async function BookingsPage() {
             service={
               b.extension_name ? `${b.treatment_name} + ${b.extension_name}` : b.treatment_name
             }
+            removalRequested={b.removal_requested}
             date={b.booking_date}
             time={b.booking_time}
             status={b.status}

@@ -10,6 +10,7 @@ export type CustomerDetails = {
 export type BookingDraft = {
   treatmentId: string | null;
   extensionId: string | null;
+  removalRequested: boolean;
   date: DateKey | null;
   time: SlotTime | null;
   customer: CustomerDetails | null;
@@ -21,6 +22,7 @@ export type BookingDraft = {
 export const EMPTY_BOOKING_DRAFT: BookingDraft = {
   treatmentId: null,
   extensionId: null,
+  removalRequested: false,
   date: null,
   time: null,
   customer: null,

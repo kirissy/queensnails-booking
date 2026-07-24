@@ -4,11 +4,22 @@ import { NAIL_TREATMENTS, EXTENSIONS } from "@/lib/pricing";
 type Props = {
   treatmentId: string | null;
   extensionId: string | null;
-  onChange: (patch: { treatmentId?: string | null; extensionId?: string | null }) => void;
+  removalRequested: boolean;
+  onChange: (patch: {
+    treatmentId?: string | null;
+    extensionId?: string | null;
+    removalRequested?: boolean;
+  }) => void;
   onNext: () => void;
 };
 
-export function ServiceStep({ treatmentId, extensionId, onChange, onNext }: Props) {
+export function ServiceStep({
+  treatmentId,
+  extensionId,
+  removalRequested,
+  onChange,
+  onNext,
+}: Props) {
   const treatment = NAIL_TREATMENTS.find((t) => t.id === treatmentId) ?? null;
   const canProceed = !!treatment && treatment.bookable;
 
@@ -112,6 +123,47 @@ export function ServiceStep({ treatmentId, extensionId, onChange, onNext }: Prop
             </button>
           ))}
         </div>
+      </div>
+
+      <div>
+        <h3 className="font-serif text-lg text-charcoal">Removal</h3>
+        <p className="mt-1 font-sans text-xs text-charcoal/50">
+          Do you need your current nails removed before this treatment?
+        </p>
+        <div className="mt-2 flex gap-2">
+          <button
+            type="button"
+            onClick={() => onChange({ removalRequested: false })}
+            className={`flex-1 rounded-xl border px-4 py-2.5 text-center font-sans text-sm transition-colors ${
+              !removalRequested
+                ? "border-rose-gold bg-blush/40 text-charcoal"
+                : "border-nude/60 text-charcoal hover:bg-blush/20"
+            }`}
+          >
+            No
+          </button>
+          <button
+            type="button"
+            onClick={() => onChange({ removalRequested: true })}
+            className={`flex-1 rounded-xl border px-4 py-2.5 text-center font-sans text-sm transition-colors ${
+              removalRequested
+                ? "border-rose-gold bg-blush/40 text-charcoal"
+                : "border-nude/60 text-charcoal hover:bg-blush/20"
+            }`}
+          >
+            Yes
+          </button>
+        </div>
+        {removalRequested && (
+          <p className="mt-2 font-sans text-xs text-charcoal/50">
+            Noted — removal fees depend on your current nails and are
+            confirmed with the owner. See the{" "}
+            <Link href="/services" className="underline hover:text-burgundy">
+              full pricelist
+            </Link>{" "}
+            for reference.
+          </p>
+        )}
       </div>
 
       <p className="font-sans text-xs text-charcoal/50">

@@ -27,6 +27,7 @@ type Props = {
   customerPhone: string;
   customerEmail: string;
   service: string;
+  removalRequested: boolean;
   date: string;
   time: SlotTime;
   status: BookingStatus;
@@ -40,6 +41,7 @@ export function BookingRow({
   customerPhone,
   customerEmail,
   service,
+  removalRequested,
   date,
   time,
   status,
@@ -80,6 +82,11 @@ export function BookingRow({
         {date} · {time} WIB
         {balancePaid && <span className="ml-2 text-rose-gold-dark">Balance paid</span>}
       </p>
+      {removalRequested && (
+        <span className="w-fit rounded-full bg-burgundy/10 px-2.5 py-1 font-sans text-xs font-medium text-burgundy">
+          Removal requested
+        </span>
+      )}
       {notes && <p className="font-sans text-xs text-charcoal/50">Notes: {notes}</p>}
       <div className="flex flex-wrap gap-3 font-sans text-xs text-charcoal/60">
         <a href={waChatLink(customerPhone)} target="_blank" rel="noopener noreferrer" className="underline hover:text-burgundy">

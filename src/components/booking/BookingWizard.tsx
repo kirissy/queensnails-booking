@@ -60,6 +60,7 @@ export function BookingWizard({ availability }: { availability: AvailabilityData
         <ServiceStep
           treatmentId={draft.treatmentId}
           extensionId={draft.extensionId}
+          removalRequested={draft.removalRequested}
           onChange={(patch) => setDraft((d) => ({ ...d, ...patch }))}
           onNext={() => goTo("slot")}
         />

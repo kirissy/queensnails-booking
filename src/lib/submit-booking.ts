@@ -21,6 +21,7 @@ export async function submitBooking(draft: BookingDraft): Promise<{ bookingId: s
   const formData = new FormData();
   formData.set("treatmentId", draft.treatmentId);
   if (draft.extensionId) formData.set("extensionId", draft.extensionId);
+  formData.set("removalRequested", String(draft.removalRequested));
   formData.set("date", draft.date);
   formData.set("time", draft.time);
   formData.set("name", draft.customer.name);
