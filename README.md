@@ -63,6 +63,16 @@ Two routes run on a daily schedule (Vercel's Hobby plan doesn't allow cron more 
 
 `vercel.json` already declares both as Vercel Cron jobs. Set `CRON_SECRET` to any random string — Vercel sends it automatically as `Authorization: Bearer $CRON_SECRET`. On another host, call these on the same schedule with that header yourself.
 
+## Deploying to Vercel
+
+`.env.local` is only read locally — it's gitignored and Vercel never sees it. Environment variables have to be added separately in the Vercel dashboard (**Settings → Environment Variables**), and a few things trip people up:
+
+- Check the **Production** box for each variable. It's easy to add one scoped to only Preview/Development and have the live site silently keep running on mock data.
+- Vercel snapshots env vars into the deployment at **build time**, not live at runtime. Adding or changing a variable does nothing to deployments that already exist — you have to trigger a new one (Deployments tab → **Redeploy**, or push a commit) *after* saving the variable, not before.
+- Set `NEXT_PUBLIC_SITE_URL` to your actual Vercel URL, not `http://localhost:3000` — it's used in email links back to the admin dashboard.
+
+If `/admin` shows "Supabase isn't connected yet" on the live site but works fine on `npm run dev` locally, it's this — not a code issue.
+
 ## Project structure
 
 - `src/lib/pricing.ts`, `src/lib/policy.ts` — the studio's fixed pricelist and booking policy (verbatim copy, reused across the booking flow, emails, and admin).
