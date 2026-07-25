@@ -17,7 +17,7 @@ export default async function VerificationQueuePage() {
   const { data: bookings } = await supabase
     .from("bookings")
     .select(
-      "id, created_at, customer_name, customer_phone, treatment_name, extension_name, removal_requested, booking_date, booking_time, deposit_amount, proof_photo_path"
+      "id, created_at, customer_name, customer_phone, treatment_name, extension_name, removal_requested, booking_date, booking_time, deposit_amount"
     )
     .eq("status", "pending_verification")
     // Excludes holds whose 60-minute window already lapsed but haven't been
@@ -26,15 +26,6 @@ export default async function VerificationQueuePage() {
     .gt("hold_expires_at", new Date().toISOString())
     .order("created_at", { ascending: true });
 
-  const cards = await Promise.all(
-    (bookings ?? []).map(async (b) => {
-      const { data: signed } = await supabase.storage
-        .from("booking-uploads")
-        .createSignedUrl(b.proof_photo_path, 60 * 10);
-      return { ...b, proofUrl: signed?.signedUrl ?? null };
-    })
-  );
-
   return (
     <div className="flex flex-col gap-4">
       <div>
@@ -42,18 +33,17 @@ export default async function VerificationQueuePage() {
           Deposit Verification Queue
         </h1>
         <p className="mt-1 font-sans text-sm text-charcoal/60">
-          Bookings are confirmed automatically on submission now, so this
-          should normally be empty — it only catches anything still stuck
-          pending from before that changed.
+          A slot isn&apos;t secured until you confirm it — check WhatsApp for
+          their payment proof, oldest reservations first.
         </p>
       </div>
 
-      {cards.length === 0 ? (
+      {!bookings || bookings.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-nude/60 px-5 py-8 text-center font-sans text-sm text-charcoal/50">
           Nothing waiting on you right now.
         </p>
       ) : (
-        cards.map((b) => (
+        bookings.map((b) => (
           <VerificationCard
             key={b.id}
             bookingId={b.id}
@@ -69,7 +59,6 @@ export default async function VerificationQueuePage() {
             time={b.booking_time}
             depositAmount={b.deposit_amount}
             submittedAt={b.created_at}
-            proofUrl={b.proofUrl}
           />
         ))
       )}

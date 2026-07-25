@@ -1,10 +1,10 @@
 # Queensnails Booking
 
-Online booking app for Queensnails, a private home nail art studio in Jakarta. Customers book a service and pay a Rp 50,000 deposit via bank transfer (with photo proof), the studio owner verifies it from an admin dashboard, and confirmed bookings sync to her Google Calendar.
+Online booking app for Queensnails, a private home nail art studio in Jakarta. Customers reserve a slot online (held for 60 minutes), get an automated WhatsApp message with bank transfer details, and send their payment proof back over WhatsApp. The studio owner checks it there and manually confirms the booking from an admin dashboard, which syncs it to her Google Calendar.
 
 ## Stack
 
-Next.js (App Router) + TypeScript + Tailwind, Supabase (Postgres, Auth, Storage), Google Calendar API, Resend for email. See `AGENTS.md` — this project pins a Next.js version with breaking changes from older docs/training data (e.g. `middleware.ts` is now `proxy.ts`); check `node_modules/next/dist/docs/` before assuming an API.
+Next.js (App Router) + TypeScript + Tailwind, Supabase (Postgres, Auth, Storage), Google Calendar API, Resend for email, WhatsApp Cloud API for the reservation message, Instagram Graph API for the homepage feed. See `AGENTS.md` — this project pins a Next.js version with breaking changes from older docs/training data (e.g. `middleware.ts` is now `proxy.ts`); check `node_modules/next/dist/docs/` before assuming an API.
 
 ## Running locally
 
@@ -50,9 +50,21 @@ Without this, emails are skipped and logged to the server console instead — th
 
 Without this, the homepage shows placeholder tiles in the brand palette instead of real posts (`src/lib/instagram.ts`) — everything else on the page still works. Long-lived tokens expire after 60 days and need refreshing; there's no refresh flow built yet since this needs a real token to test against.
 
-### WhatsApp
+### WhatsApp (required for the automated reservation message)
 
-No WhatsApp Business API integration is built — per the spec, click-to-chat (`wa.me`) links are used instead, both for customers messaging the studio and for the owner messaging customers from the admin dashboard. No credentials needed.
+The message telling a customer their slot is reserved and how to pay is sent automatically via the WhatsApp Cloud API — this needs real setup through Meta, not just an API key:
+
+1. Create a Meta Developer app, add the WhatsApp product, and set up a WhatsApp Business Account (WABA) with a registered phone number (Meta's free test number works for development; production needs your own verified number).
+2. Generate a permanent access token for the WABA (via a System User in Meta Business Manager — the short-lived token you get by default in the app dashboard expires in 24h).
+3. **Submit a message template for approval** — business-initiated messages can't be free text, they have to use a pre-approved template. Create one named to match `WHATSAPP_TEMPLATE_NAME` (default `booking_slot_reserved`), category **Utility**, with this body and exactly 3 variables in this order (name, date, time):
+   > Hi {{1}}, your queensnails appointment on {{2}} at {{3}} WIB is reserved for the next 60 minutes. Please transfer Rp50,000 to BCA 5490409051 (Aurelia Queena) and reply here with your payment proof to confirm. If we don't receive it in time, this slot will be released.
+
+   Approval is manual on Meta's side and can take anywhere from minutes to a couple of days.
+4. Fill in `WHATSAPP_ACCESS_TOKEN` and `WHATSAPP_PHONE_NUMBER_ID` (found in the app dashboard's WhatsApp → API Setup page). Adjust `WHATSAPP_TEMPLATE_NAME`/`WHATSAPP_TEMPLATE_LANGUAGE` if you named or localized the template differently.
+
+Without this, the WhatsApp send is skipped (logged to the server console) but the booking still goes through — the reservation email covers the same information as a fallback, so nothing is silently lost, it's just not on WhatsApp until this is set up.
+
+The owner's own outbound messaging (checking a customer's payment proof, following up) still just uses plain `wa.me` click-to-chat links (`src/lib/whatsapp.ts`) — no API needed for that side, since she's a human replying, not the system sending unprompted.
 
 ### Scheduled jobs
 
@@ -76,10 +88,11 @@ If `/admin` shows "Supabase isn't connected yet" on the live site but works fine
 ## Project structure
 
 - `src/lib/pricing.ts`, `src/lib/policy.ts` — the studio's fixed pricelist and booking policy (verbatim copy, reused across the booking flow, emails, and admin).
-- `src/lib/availability.ts` — the slot engine (Sundays closed, 11:00/18:00 fixed slots, Asia/Jakarta timezone).
+- `src/lib/availability.ts` — the slot engine (Sundays closed, 11:00/15:00/18:00 fixed slots, one booking per day, Asia/Jakarta timezone, ≥1 day lead time).
 - `src/lib/supabase/` — browser/server/admin Supabase clients. `admin.ts` uses the service role key and is server-only.
-- `src/app/book/` — the customer booking wizard (service → slot → details → policy → payment/proof → confirmation).
-- `src/app/admin/` — the owner's dashboard: deposit-verification queue (`/admin`, the default view), bookings list, slot/calendar controls, all behind Supabase Auth (`src/proxy.ts` gates `/admin/*`).
-- `supabase/migrations/` — schema: `bookings`, `day_overrides`, `studio_settings`, storage bucket for proof-of-payment uploads.
+- `src/lib/whatsapp.ts` — automated reservation message via the WhatsApp Cloud API, plus the plain `wa.me` click-to-chat helper used by the admin dashboard.
+- `src/app/book/` — the customer booking wizard (service → slot → details → policy → reserve → confirmation). Proof of payment is sent over WhatsApp, not uploaded on the site.
+- `src/app/admin/` — the owner's dashboard: deposit-verification queue (`/admin`, the default/landing view — this is the live workflow, not a fallback), bookings list, slot/calendar controls, all behind Supabase Auth (`src/proxy.ts` gates `/admin/*`).
+- `supabase/migrations/` — schema: `bookings`, `day_overrides`, `studio_settings`, storage bucket for optional reference-photo uploads (not proof of payment, which never touches the site).
 - `src/lib/instagram.ts` — Instagram Graph API fetcher for the homepage post feed.
 - `public/logo.png` / `public/logo-white.png`, `public/icon.png` / `public/icon-white.png` — the real logo, trimmed and squared from the owner's source files; the white variants are derived from the same alpha channel for use on the burgundy header/footer.

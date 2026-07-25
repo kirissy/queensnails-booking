@@ -5,7 +5,7 @@ const LABELED_STEPS: { step: BookingStep; label: string }[] = [
   { step: "slot", label: "Date & Time" },
   { step: "details", label: "Details" },
   { step: "policy", label: "Policy" },
-  { step: "payment", label: "Payment" },
+  { step: "payment", label: "Reserve" },
 ];
 
 export function StepIndicator({ current }: { current: BookingStep }) {

@@ -34,12 +34,11 @@ export function BookingWizard({ availability }: { availability: AvailabilityData
     if (i > 0) goTo(BOOKING_STEPS[i - 1]);
   }
 
-  async function handlePaymentSubmit(proofFile: File) {
+  async function handlePaymentSubmit() {
     setSubmitting(true);
     setError(null);
     try {
-      await submitBooking({ ...draft, proofFile });
-      setDraft((d) => ({ ...d, proofFile }));
+      await submitBooking(draft);
       goTo("confirmation");
     } catch (err) {
       setError(
@@ -102,7 +101,6 @@ export function BookingWizard({ availability }: { availability: AvailabilityData
 
       {step === "payment" && (
         <PaymentStep
-          proofFile={draft.proofFile}
           submitting={submitting}
           error={error}
           onSubmit={handlePaymentSubmit}

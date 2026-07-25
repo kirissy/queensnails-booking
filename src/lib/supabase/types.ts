@@ -26,7 +26,7 @@ export type BookingRow = {
   customer_notes: string;
   reference_photo_path: string | null;
   deposit_amount: number;
-  proof_photo_path: string;
+  proof_photo_path: string | null;
   status: BookingStatus;
   hold_expires_at: string;
   verified_at: string | null;
@@ -67,7 +67,6 @@ export type Database = {
             | "customer_name"
             | "customer_phone"
             | "customer_email"
-            | "proof_photo_path"
           >;
         Update: Partial<BookingRow>;
         Relationships: [];

@@ -16,7 +16,6 @@ export type BookingDraft = {
   customer: CustomerDetails | null;
   referencePhoto: File | null;
   policyAccepted: boolean;
-  proofFile: File | null;
 };
 
 export const EMPTY_BOOKING_DRAFT: BookingDraft = {
@@ -28,7 +27,6 @@ export const EMPTY_BOOKING_DRAFT: BookingDraft = {
   customer: null,
   referencePhoto: null,
   policyAccepted: false,
-  proofFile: null,
 };
 
 export const BOOKING_STEPS = [

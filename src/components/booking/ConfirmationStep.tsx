@@ -17,14 +17,14 @@ export function ConfirmationStep({ draft }: Props) {
     <div className="flex flex-col gap-6 text-center">
       <div>
         <p className="font-sans text-xs uppercase tracking-[0.3em] text-burgundy">
-          Confirmed
+          Reserved
         </p>
         <h2 className="mt-2 font-serif text-2xl text-charcoal">
-          You&apos;re all booked in!
+          Your slot is held for 60 minutes!
         </h2>
         <p className="mt-2 font-sans text-sm text-charcoal/70">
-          Your appointment is confirmed — we&apos;ve sent the details to your
-          email.
+          Check WhatsApp for payment instructions — transfer the deposit and
+          reply there with your proof to confirm your booking.
         </p>
       </div>
 
@@ -49,7 +49,7 @@ export function ConfirmationStep({ draft }: Props) {
         )}
         <div className="flex items-center justify-between">
           <span className="font-sans text-sm text-charcoal/70">
-            Deposit paid
+            Deposit due
           </span>
           <span className="font-sans text-sm font-medium text-charcoal">
             {formatIDR(DEPOSIT_AMOUNT)}
@@ -72,9 +72,8 @@ export function ConfirmationStep({ draft }: Props) {
       <p className="font-sans text-xs text-charcoal/50">
         The service above is just a note for us to prepare — final design and
         price are confirmed with the owner in person, and the remaining
-        balance is paid then. Need to change something? Contact the studio
-        directly on WhatsApp or Instagram — bookings can&apos;t be
-        self-cancelled per our policy.
+        balance is paid then. Didn&apos;t get the WhatsApp message? Contact
+        the studio directly on WhatsApp or Instagram.
       </p>
 
       <Link

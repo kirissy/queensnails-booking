@@ -9,7 +9,7 @@ export class SlotTakenError extends Error {}
  * round trip so the wizard stays demoable end-to-end on mock data.
  */
 export async function submitBooking(draft: BookingDraft): Promise<{ bookingId: string }> {
-  if (!draft.treatmentId || !draft.date || !draft.time || !draft.customer || !draft.proofFile) {
+  if (!draft.treatmentId || !draft.date || !draft.time || !draft.customer) {
     throw new Error("Booking draft is incomplete.");
   }
 
@@ -28,7 +28,6 @@ export async function submitBooking(draft: BookingDraft): Promise<{ bookingId: s
   formData.set("phone", draft.customer.phone);
   formData.set("email", draft.customer.email);
   formData.set("notes", draft.customer.notes);
-  formData.set("proofFile", draft.proofFile);
   if (draft.referencePhoto) formData.set("referencePhoto", draft.referencePhoto);
 
   const res = await fetch("/api/bookings", { method: "POST", body: formData });

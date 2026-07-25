@@ -4,8 +4,8 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { NAIL_TREATMENTS, EXTENSIONS, DEPOSIT_AMOUNT } from "@/lib/pricing";
 import { SLOT_TIMES } from "@/lib/availability";
-import { notifyOwnerOfNewBooking, notifyCustomerConfirmed } from "@/lib/notifications";
-import { createCalendarEventForBooking } from "@/lib/google-calendar";
+import { notifyOwnerOfNewReservation, notifyCustomerReservation } from "@/lib/notifications";
+import { sendReservationWhatsApp } from "@/lib/whatsapp";
 
 const fieldsSchema = z.object({
   treatmentId: z.string(),
@@ -57,37 +57,23 @@ export async function POST(request: Request) {
     ? EXTENSIONS.find((e) => e.id === parsed.data.extensionId)
     : undefined;
 
-  const proofFile = formData.get("proofFile");
-  if (!(proofFile instanceof File) || proofFile.size === 0) {
-    return NextResponse.json({ error: "Proof of payment is required." }, { status: 400 });
-  }
   const referencePhoto = formData.get("referencePhoto");
 
   const supabase = createAdminClient();
   const bookingId = crypto.randomUUID();
 
-  // Stale pending_verification rows can only be legacy/manual at this point
-  // (new bookings go straight to confirmed — see below), but this is a
-  // harmless no-op otherwise and still matters for the whole-day uniqueness
-  // check right after it.
+  // Lazily release a stale hold on this day before claiming it — this is
+  // what actually enforces the 60-minute hold window (see HOLD_WINDOW_MINUTES),
+  // not the daily cron sweep, which only exists for bookkeeping on Vercel's
+  // Hobby plan (cron can't run more often than once a day there). Matches on
+  // the whole day, not just this exact time, since only one booking per day
+  // is allowed at all.
   await supabase
     .from("bookings")
     .update({ status: "expired" })
     .eq("booking_date", parsed.data.date)
     .eq("status", "pending_verification")
     .lt("hold_expires_at", new Date().toISOString());
-
-  const proofExt = proofFile.name.split(".").pop() || "jpg";
-  const proofPath = `${bookingId}/proof.${proofExt}`;
-  const { error: proofUploadError } = await supabase.storage
-    .from("booking-uploads")
-    .upload(proofPath, proofFile, { contentType: proofFile.type });
-  if (proofUploadError) {
-    return NextResponse.json(
-      { error: "Couldn't upload your proof of payment. Please try again." },
-      { status: 500 }
-    );
-  }
 
   let referencePhotoPath: string | null = null;
   if (referencePhoto instanceof File && referencePhoto.size > 0) {
@@ -98,11 +84,10 @@ export async function POST(request: Request) {
       .upload(referencePhotoPath, referencePhoto, { contentType: referencePhoto.type });
   }
 
-  // Slots are secured automatically on submission — no manual owner
-  // verification step. There's no payment gateway confirming the transfer
-  // actually happened, so this trades that check away for instant booking;
-  // the owner can still cancel a booking after the fact if a receipt turns
-  // out to be bogus.
+  // Slot is held (status defaults to pending_verification, hold_expires_at
+  // defaults to +60min) as soon as this insert succeeds — proof of payment
+  // now happens over WhatsApp, not an upload here. The owner checks it there
+  // and confirms manually in the admin dashboard (src/app/admin/actions.ts).
   const bookingRecord = {
     id: bookingId,
     treatment_id: treatment.id,
@@ -120,9 +105,6 @@ export async function POST(request: Request) {
     removal_requested: parsed.data.removalRequested === "true",
     reference_photo_path: referencePhotoPath,
     deposit_amount: DEPOSIT_AMOUNT,
-    proof_photo_path: proofPath,
-    status: "confirmed" as const,
-    verified_at: new Date().toISOString(),
   };
 
   const { error: insertError } = await supabase.from("bookings").insert(bookingRecord);
@@ -141,31 +123,23 @@ export async function POST(request: Request) {
     );
   }
 
-  const eventId = await createCalendarEventForBooking(bookingRecord).catch((err) => {
-    console.error("[calendar] failed to create event", err);
-    return null;
-  });
-  if (eventId) {
-    await supabase
-      .from("bookings")
-      .update({ google_calendar_event_id: eventId })
-      .eq("id", bookingId);
-  }
-
   await Promise.allSettled([
-    notifyOwnerOfNewBooking({
+    sendReservationWhatsApp({
+      phone: parsed.data.phone,
       customerName: parsed.data.name,
       date: parsed.data.date,
       time: parsed.data.time,
     }),
-    notifyCustomerConfirmed({
+    notifyOwnerOfNewReservation({
+      customerName: parsed.data.name,
+      date: parsed.data.date,
+      time: parsed.data.time,
+    }),
+    notifyCustomerReservation({
       email: parsed.data.email,
       customerName: parsed.data.name,
       date: parsed.data.date,
       time: parsed.data.time,
-      treatmentName: treatment.name,
-      extensionName: extension?.name ?? null,
-      depositAmount: DEPOSIT_AMOUNT,
     }),
   ]);
 

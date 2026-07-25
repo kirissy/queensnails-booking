@@ -17,7 +17,7 @@ function getResendClient(): Resend | null {
   return new Resend(RESEND_API_KEY);
 }
 
-export async function notifyOwnerOfNewBooking(params: {
+export async function notifyOwnerOfNewReservation(params: {
   customerName: string;
   date: string;
   time: SlotTime;
@@ -30,11 +30,31 @@ export async function notifyOwnerOfNewBooking(params: {
   await resend.emails.send({
     from: RESEND_FROM_EMAIL,
     to: OWNER_EMAIL,
-    subject: `New booking — ${params.customerName}, ${params.date} ${params.time}`,
+    subject: `New reservation — ${params.customerName}, ${params.date} ${params.time}`,
     html: `
-      <p>${params.customerName} just booked and paid the deposit for ${params.date} at ${params.time} WIB.</p>
-      <p>It's automatically confirmed — no action needed, but check the receipt in the dashboard if you want to double-check it.</p>
-      <p><a href="${SITE_URL}/admin/bookings">Open bookings</a></p>
+      <p>${params.customerName} just reserved ${params.date} at ${params.time} WIB and was sent payment instructions on WhatsApp.</p>
+      <p>This slot is held for 60 minutes but not yet secured — check WhatsApp for their payment proof, then confirm or reject in the dashboard.</p>
+      <p><a href="${SITE_URL}/admin">Open verification queue</a></p>
+    `,
+  });
+}
+
+export async function notifyCustomerReservation(params: {
+  email: string;
+  customerName: string;
+  date: string;
+  time: SlotTime;
+}) {
+  const resend = getResendClient();
+  if (!resend) return;
+  await resend.emails.send({
+    from: RESEND_FROM_EMAIL,
+    to: params.email,
+    subject: "Your slot is reserved — complete payment on WhatsApp",
+    html: `
+      <p>Hi ${params.customerName},</p>
+      <p>Your slot for ${params.date} at ${params.time} WIB is reserved for the next 60 minutes.</p>
+      <p>We've sent you a WhatsApp message with the deposit transfer details — please transfer Rp50,000 and reply there with your payment proof to confirm your booking. If we don't hear back in time, this slot will be released.</p>
     `,
   });
 }
