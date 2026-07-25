@@ -42,8 +42,9 @@ export default async function VerificationQueuePage() {
           Deposit Verification Queue
         </h1>
         <p className="mt-1 font-sans text-sm text-charcoal/60">
-          A slot isn&apos;t secured until you confirm it — oldest submissions
-          first.
+          Bookings are confirmed automatically on submission now, so this
+          should normally be empty — it only catches anything still stuck
+          pending from before that changed.
         </p>
       </div>
 

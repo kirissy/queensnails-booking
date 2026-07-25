@@ -4,7 +4,8 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { NAIL_TREATMENTS, EXTENSIONS, DEPOSIT_AMOUNT } from "@/lib/pricing";
 import { SLOT_TIMES } from "@/lib/availability";
-import { notifyOwnerOfNewProof, notifyCustomerProofReceived } from "@/lib/notifications";
+import { notifyOwnerOfNewBooking, notifyCustomerConfirmed } from "@/lib/notifications";
+import { createCalendarEventForBooking } from "@/lib/google-calendar";
 
 const fieldsSchema = z.object({
   treatmentId: z.string(),
@@ -65,13 +66,10 @@ export async function POST(request: Request) {
   const supabase = createAdminClient();
   const bookingId = crypto.randomUUID();
 
-  // Lazily release a stale hold on this day before claiming it — this is
-  // what actually enforces the 60-minute hold window (see HOLD_WINDOW_MINUTES),
-  // not the daily cron sweep, which only exists for bookkeeping on Vercel's
-  // Hobby plan (cron can't run more often than once a day there). Matches on
-  // the whole day, not just this exact time, since only one booking per day
-  // is allowed at all — a stale hold on any slot that day would otherwise
-  // still block this insert.
+  // Stale pending_verification rows can only be legacy/manual at this point
+  // (new bookings go straight to confirmed — see below), but this is a
+  // harmless no-op otherwise and still matters for the whole-day uniqueness
+  // check right after it.
   await supabase
     .from("bookings")
     .update({ status: "expired" })
@@ -100,7 +98,12 @@ export async function POST(request: Request) {
       .upload(referencePhotoPath, referencePhoto, { contentType: referencePhoto.type });
   }
 
-  const { error: insertError } = await supabase.from("bookings").insert({
+  // Slots are secured automatically on submission — no manual owner
+  // verification step. There's no payment gateway confirming the transfer
+  // actually happened, so this trades that check away for instant booking;
+  // the owner can still cancel a booking after the fact if a receipt turns
+  // out to be bogus.
+  const bookingRecord = {
     id: bookingId,
     treatment_id: treatment.id,
     treatment_name: treatment.name,
@@ -118,7 +121,11 @@ export async function POST(request: Request) {
     reference_photo_path: referencePhotoPath,
     deposit_amount: DEPOSIT_AMOUNT,
     proof_photo_path: proofPath,
-  });
+    status: "confirmed" as const,
+    verified_at: new Date().toISOString(),
+  };
+
+  const { error: insertError } = await supabase.from("bookings").insert(bookingRecord);
 
   if (insertError) {
     // Unique violation on booking_date among held/confirmed rows — only one booking per day.
@@ -134,16 +141,31 @@ export async function POST(request: Request) {
     );
   }
 
+  const eventId = await createCalendarEventForBooking(bookingRecord).catch((err) => {
+    console.error("[calendar] failed to create event", err);
+    return null;
+  });
+  if (eventId) {
+    await supabase
+      .from("bookings")
+      .update({ google_calendar_event_id: eventId })
+      .eq("id", bookingId);
+  }
+
   await Promise.allSettled([
-    notifyOwnerOfNewProof({
-      bookingId,
+    notifyOwnerOfNewBooking({
       customerName: parsed.data.name,
       date: parsed.data.date,
       time: parsed.data.time,
     }),
-    notifyCustomerProofReceived({
+    notifyCustomerConfirmed({
       email: parsed.data.email,
       customerName: parsed.data.name,
+      date: parsed.data.date,
+      time: parsed.data.time,
+      treatmentName: treatment.name,
+      extensionName: extension?.name ?? null,
+      depositAmount: DEPOSIT_AMOUNT,
     }),
   ]);
 

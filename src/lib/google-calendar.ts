@@ -69,8 +69,20 @@ async function getAuthorizedCalendarClient() {
   };
 }
 
+type CalendarBookingInput = Pick<
+  BookingRow,
+  | "booking_date"
+  | "booking_time"
+  | "treatment_name"
+  | "extension_name"
+  | "customer_name"
+  | "customer_phone"
+  | "customer_email"
+  | "customer_notes"
+>;
+
 export async function createCalendarEventForBooking(
-  booking: BookingRow
+  booking: CalendarBookingInput
 ): Promise<string | null> {
   if (!isGoogleConfigured || !isSupabaseConfigured) return null;
   const authorized = await getAuthorizedCalendarClient();

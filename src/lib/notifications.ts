@@ -17,8 +17,7 @@ function getResendClient(): Resend | null {
   return new Resend(RESEND_API_KEY);
 }
 
-export async function notifyOwnerOfNewProof(params: {
-  bookingId: string;
+export async function notifyOwnerOfNewBooking(params: {
   customerName: string;
   date: string;
   time: SlotTime;
@@ -31,28 +30,11 @@ export async function notifyOwnerOfNewProof(params: {
   await resend.emails.send({
     from: RESEND_FROM_EMAIL,
     to: OWNER_EMAIL,
-    subject: `New deposit proof — ${params.customerName}, ${params.date} ${params.time}`,
+    subject: `New booking — ${params.customerName}, ${params.date} ${params.time}`,
     html: `
-      <p>${params.customerName} just submitted proof of payment for ${params.date} at ${params.time} WIB.</p>
-      <p>This slot is held but not yet secured — please verify in the dashboard as soon as you can.</p>
-      <p><a href="${SITE_URL}/admin">Open verification queue</a></p>
-    `,
-  });
-}
-
-export async function notifyCustomerProofReceived(params: {
-  email: string;
-  customerName: string;
-}) {
-  const resend = getResendClient();
-  if (!resend) return;
-  await resend.emails.send({
-    from: RESEND_FROM_EMAIL,
-    to: params.email,
-    subject: "We received your proof of payment — pending verification",
-    html: `
-      <p>Hi ${params.customerName},</p>
-      <p>Thanks for your booking! We've received your proof of payment and your slot is held while we verify it. We'll email you as soon as it's confirmed.</p>
+      <p>${params.customerName} just booked and paid the deposit for ${params.date} at ${params.time} WIB.</p>
+      <p>It's automatically confirmed — no action needed, but check the receipt in the dashboard if you want to double-check it.</p>
+      <p><a href="${SITE_URL}/admin/bookings">Open bookings</a></p>
     `,
   });
 }

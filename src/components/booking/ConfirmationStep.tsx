@@ -17,14 +17,14 @@ export function ConfirmationStep({ draft }: Props) {
     <div className="flex flex-col gap-6 text-center">
       <div>
         <p className="font-sans text-xs uppercase tracking-[0.3em] text-burgundy">
-          Pending Verification
+          Confirmed
         </p>
         <h2 className="mt-2 font-serif text-2xl text-charcoal">
-          Your slot is held!
+          You&apos;re all booked in!
         </h2>
         <p className="mt-2 font-sans text-sm text-charcoal/70">
-          We&apos;ve received your proof of payment. The studio will verify
-          it and confirm your appointment shortly.
+          Your appointment is confirmed — we&apos;ve sent the details to your
+          email.
         </p>
       </div>
 
@@ -72,8 +72,7 @@ export function ConfirmationStep({ draft }: Props) {
       <p className="font-sans text-xs text-charcoal/50">
         The service above is just a note for us to prepare — final design and
         price are confirmed with the owner in person, and the remaining
-        balance is paid then. Once your booking is confirmed, we&apos;ll
-        notify you by email. Need to change something? Contact the studio
+        balance is paid then. Need to change something? Contact the studio
         directly on WhatsApp or Instagram — bookings can&apos;t be
         self-cancelled per our policy.
       </p>

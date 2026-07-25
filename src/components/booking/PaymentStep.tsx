@@ -74,9 +74,8 @@ export function PaymentStep({
           className="font-sans text-sm text-charcoal/70 file:mr-3 file:rounded-full file:border-0 file:bg-blush file:px-4 file:py-2 file:font-sans file:text-sm file:text-charcoal hover:file:bg-blush-dark"
         />
         <span className="font-sans text-xs text-charcoal/50">
-          Your slot is held for {""}
-          <strong>60 minutes</strong> while awaiting your proof — after that
-          it&apos;s released back to other customers.
+          Your booking is confirmed instantly once you submit — no waiting
+          for verification.
         </span>
       </label>
 
