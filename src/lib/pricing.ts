@@ -23,16 +23,16 @@ export type RemovalFee = {
 export const NAIL_TREATMENTS: NailTreatment[] = [
   {
     id: "one-plain-color",
-    name: "One Plain Color",
+    name: "One Plain Colour",
     priceMin: 275_000,
-    note: "Choose one color from the display menu",
+    note: "Choose one colour from our selection on the display menu",
     bookable: true,
   },
   {
     id: "mix-color",
-    name: "Mix Color",
+    name: "Mixed Colour",
     priceMin: 300_000,
-    note: "We mix your preferred colors",
+    note: "We mix your preferred colours",
     bookable: true,
   },
   {
@@ -91,9 +91,12 @@ export const REMOVAL_FEES: RemovalFee[] = [
 export const DEPOSIT_AMOUNT = 50_000;
 
 export function formatIDR(amount: number): string {
-  return new Intl.NumberFormat("id-ID", {
+  const formatted = new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",
     maximumFractionDigits: 0,
   }).format(amount);
+  // Intl inserts a space between "Rp" and the number ("Rp 275.000") — the
+  // brand's own formatting drops it ("Rp275.000").
+  return formatted.replace(/\s/g, "");
 }

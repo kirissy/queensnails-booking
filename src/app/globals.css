@@ -7,16 +7,20 @@
   --color-cream: #fffbf9;
   --color-cream-dark: #f2e9e0;
   --color-nude: #e8d5c8;
-  --color-blush: #f3dcdc;
+  --color-blush: #ffe9e9;
   --color-blush-dark: #eac3c3;
-  /* Palette aligned to the Figma design system (queensnails file) — coral is
-     brand/primary-pink/400, burgundy is brand/primary-pink/800. */
+  /* Palette aligned to the Figma design system (queensnails file). Two dark
+     reds are distinct there, not one: maroon (secondary-pink/800) is used
+     for header/footer/full-bleed CTA bands, burgundy (primary-pink/800) for
+     smaller interactive accents (buttons, hovers, active tabs) elsewhere. */
   --color-rose-gold: #f48e88;
   --color-rose-gold-dark: #dd6f63;
   --color-gold: #f6be86;
   --color-gold-dark: #eda860;
   --color-charcoal: #2b2320;
   --color-burgundy: #691b11;
+  --color-maroon: #750011;
+  --color-price: #982b1e;
   --color-clay: #c17a6c;
   --color-clay-dark: #a8624f;
 }
@@ -36,6 +40,8 @@
   --color-gold-dark: var(--color-gold-dark);
   --color-charcoal: var(--color-charcoal);
   --color-burgundy: var(--color-burgundy);
+  --color-maroon: var(--color-maroon);
+  --color-price: var(--color-price);
   --color-clay: var(--color-clay);
   --color-clay-dark: var(--color-clay-dark);
 
