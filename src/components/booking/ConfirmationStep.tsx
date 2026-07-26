@@ -1,17 +1,19 @@
 import Link from "next/link";
 import { format } from "date-fns";
-import { NAIL_TREATMENTS, EXTENSIONS, DEPOSIT_AMOUNT, formatIDR } from "@/lib/pricing";
+import { DEPOSIT_AMOUNT, formatIDR } from "@/lib/pricing";
 import { STUDIO_ADDRESS } from "@/lib/policy";
 import { parseDateKey } from "@/lib/availability";
 import type { BookingDraft } from "@/lib/booking-draft";
+import type { PublicPricingData } from "@/lib/services-data";
 
 type Props = {
   draft: BookingDraft;
+  pricing: PublicPricingData;
 };
 
-export function ConfirmationStep({ draft }: Props) {
-  const treatment = NAIL_TREATMENTS.find((t) => t.id === draft.treatmentId);
-  const extension = EXTENSIONS.find((e) => e.id === draft.extensionId);
+export function ConfirmationStep({ draft, pricing }: Props) {
+  const treatment = pricing.treatments.find((t) => t.id === draft.treatmentId);
+  const extension = pricing.extensions.find((e) => e.id === draft.extensionId);
 
   return (
     <div className="flex flex-col gap-6 text-center">

@@ -2,6 +2,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { BookingWizard } from "@/components/booking/BookingWizard";
 import { getAvailabilityData } from "@/lib/get-availability-data";
+import { getPublicPricingData } from "@/lib/services-data";
 
 // Availability changes constantly (bookings, holds expiring, owner slot
 // toggles) and this page reads none of the signals (cookies/headers/params)
@@ -11,14 +12,17 @@ import { getAvailabilityData } from "@/lib/get-availability-data";
 export const dynamic = "force-dynamic";
 
 export default async function BookPage() {
-  const availability = await getAvailabilityData();
+  const [availability, pricing] = await Promise.all([
+    getAvailabilityData(),
+    getPublicPricingData(),
+  ]);
 
   return (
     <div className="flex flex-1 flex-col">
       <SiteHeader />
 
-      <main className="mx-auto flex w-full max-w-md flex-1 flex-col px-6 py-16 sm:px-10">
-        <BookingWizard availability={availability} />
+      <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col px-6 py-16 sm:px-10">
+        <BookingWizard availability={availability} pricing={pricing} />
       </main>
 
       <SiteFooter />

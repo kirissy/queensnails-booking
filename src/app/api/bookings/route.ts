@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
-import { NAIL_TREATMENTS, EXTENSIONS, DEPOSIT_AMOUNT } from "@/lib/pricing";
+import { DEPOSIT_AMOUNT } from "@/lib/pricing";
 import { SLOT_TIMES } from "@/lib/availability";
 import { notifyOwnerOfNewReservation, notifyCustomerReservation } from "@/lib/notifications";
 import { sendReservationWhatsApp } from "@/lib/whatsapp";
@@ -47,19 +47,31 @@ export async function POST(request: Request) {
     );
   }
 
-  const treatment = NAIL_TREATMENTS.find(
-    (t) => t.id === parsed.data.treatmentId && t.bookable
-  );
+  const supabase = createAdminClient();
+
+  // Never trust a client-submitted price — look up the treatment/extension
+  // server-side so the stored treatment_price/extension_price always
+  // reflects what's actually configured in /admin/services right now.
+  const { data: treatment } = await supabase
+    .from("treatments")
+    .select("id, name, price_min")
+    .eq("id", parsed.data.treatmentId)
+    .eq("bookable", true)
+    .eq("active", true)
+    .maybeSingle();
   if (!treatment) {
     return NextResponse.json({ error: "Invalid service selected." }, { status: 400 });
   }
-  const extension = parsed.data.extensionId
-    ? EXTENSIONS.find((e) => e.id === parsed.data.extensionId)
-    : undefined;
+  const { data: extension } = parsed.data.extensionId
+    ? await supabase
+        .from("extensions")
+        .select("id, name, price")
+        .eq("id", parsed.data.extensionId)
+        .eq("active", true)
+        .maybeSingle()
+    : { data: null };
 
   const referencePhoto = formData.get("referencePhoto");
-
-  const supabase = createAdminClient();
   const bookingId = crypto.randomUUID();
 
   // Lazily release a stale hold on this day before claiming it — this is
@@ -92,7 +104,7 @@ export async function POST(request: Request) {
     id: bookingId,
     treatment_id: treatment.id,
     treatment_name: treatment.name,
-    treatment_price: treatment.priceMin,
+    treatment_price: treatment.price_min,
     extension_id: extension?.id ?? null,
     extension_name: extension?.name ?? null,
     extension_price: extension?.price ?? null,

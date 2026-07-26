@@ -29,15 +29,17 @@ export function BookingsBoard({
   bookings,
   initialStatus,
   initialDate,
+  initialSearch,
 }: {
   bookings: BookingRowData[];
   initialStatus?: BookingStatus;
   initialDate?: string;
+  initialSearch?: string;
 }) {
   const [status, setStatus] = useState<BookingStatus | "all">(initialStatus ?? "all");
   const [dateFilter, setDateFilter] = useState<DateFilter>("all");
   const [exactDate, setExactDate] = useState<string | null>(initialDate ?? null);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(initialSearch ?? "");
   const [sort, setSort] = useState<SortKey>("date_desc");
 
   const today = dateKey(new Date());

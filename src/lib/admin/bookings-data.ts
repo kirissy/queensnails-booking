@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import type { BookingRow } from "@/lib/supabase/types";
+import type { BookingRow, BookingStatus } from "@/lib/supabase/types";
 
 export type AdminBooking = Pick<
   BookingRow,
@@ -51,3 +51,51 @@ export const ACTIVE_BOOKING_STATUSES = [
   "completed",
   "no_show",
 ] as const;
+
+export type Customer = {
+  phone: string;
+  name: string;
+  email: string;
+  totalBookings: number;
+  totalSpent: number;
+  lastBookingDate: string;
+  lastStatus: BookingStatus;
+};
+
+/**
+ * There's no separate customers table — a "customer" is just the set of
+ * bookings sharing a phone number. Grouping happens here rather than in SQL
+ * since the whole bookings table is already fetched in one shot elsewhere.
+ */
+export function computeCustomers(bookings: AdminBooking[]): Customer[] {
+  const byPhone = new Map<string, AdminBooking[]>();
+  for (const b of bookings) {
+    const list = byPhone.get(b.customer_phone) ?? [];
+    list.push(b);
+    byPhone.set(b.customer_phone, list);
+  }
+
+  const customers: Customer[] = [];
+  for (const [phone, list] of byPhone) {
+    const sorted = [...list].sort((a, b) => b.booking_date.localeCompare(a.booking_date));
+    const latest = sorted[0];
+    const totalSpent = list
+      .filter((b) => b.status === "confirmed" || b.status === "completed")
+      .reduce(
+        (sum, b) => sum + b.treatment_price + (b.extension_price ?? 0) + (b.removal_surcharge ?? 0),
+        0
+      );
+
+    customers.push({
+      phone,
+      name: latest.customer_name,
+      email: latest.customer_email,
+      totalBookings: list.length,
+      totalSpent,
+      lastBookingDate: latest.booking_date,
+      lastStatus: latest.status,
+    });
+  }
+
+  return customers.sort((a, b) => b.lastBookingDate.localeCompare(a.lastBookingDate));
+}

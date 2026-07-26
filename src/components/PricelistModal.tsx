@@ -4,6 +4,7 @@ import { useRef, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { PricelistContent } from "@/components/PricelistContent";
+import type { PublicPricingData } from "@/lib/services-data";
 
 const noopSubscribe = () => () => {};
 
@@ -16,7 +17,13 @@ function useIsClient() {
   );
 }
 
-export function PricelistModal({ className }: { className?: string }) {
+export function PricelistModal({
+  className,
+  pricing,
+}: {
+  className?: string;
+  pricing: PublicPricingData;
+}) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   // The trigger below often sits inline inside a <p> (e.g. in ServiceStep's
   // copy) — <p> can't legally contain block content like <dialog>/<h1>, so
@@ -51,7 +58,7 @@ export function PricelistModal({ className }: { className?: string }) {
               >
                 <X className="h-4 w-4" />
               </button>
-              <PricelistContent />
+              <PricelistContent {...pricing} />
             </div>
           </dialog>,
           document.body

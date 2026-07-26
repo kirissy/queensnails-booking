@@ -2,15 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import {
-  NAIL_TREATMENTS,
-  EXTENSIONS,
-  REMOVAL_FEES,
-  INCLUDED_ITEMS,
-  formatIDR,
-} from "@/lib/pricing";
+import { INCLUDED_ITEMS, formatIDR } from "@/lib/pricing";
+import type { PublicPricingData } from "@/lib/services-data";
 
-function priceLabel(min: number, max?: number) {
+function priceLabel(min: number, max?: number | null) {
   if (min === 0) return "Ask / consult in advance";
   if (max) return `${formatIDR(min)} – ${formatIDR(max)}`;
   return formatIDR(min);
@@ -47,7 +42,7 @@ function PriceTable({ items }: { items: PriceRow[] }) {
   );
 }
 
-export function PricelistContent() {
+export function PricelistContent({ treatments, extensions, removalFees }: PublicPricingData) {
   const [tab, setTab] = useState<"nail-art" | "course">("nail-art");
 
   return (
@@ -57,9 +52,7 @@ export function PricelistContent() {
           Services &amp; Pricing
         </h1>
         <p className="max-w-2xl font-sans text-base text-charcoal/70 sm:text-lg">
-          Prices listed are starting rates (minimum charges) and are subject to change. Final pricing is determined on the day
-          of the appointment based on the agreed design and any additional
-          details discussed between the customer and the nail artist.
+          Prices listed are starting rates (minimum charges) and are subject to change. Final pricing is determined on the day of the appointment based on the agreed design and any additional details discussed between the customer and the nail artist.
         </p>
       </div>
 
@@ -90,24 +83,25 @@ export function PricelistContent() {
         </div>
 
         {tab === "course" ? (
-          <div className="rounded-2xl border border-dashed border-blush-dark px-6 py-12 text-center">
-            <h2 className="font-sans text-lg font-semibold text-charcoal">
-              Nail Art Classes Available Upon Request
-            </h2>
-            <p className="mt-2 font-sans text-sm text-charcoal/70">
+          <section className="flex flex-col gap-3">
+              <h2 className="font-sans text-2xl font-semibold text-charcoal sm:text-3xl">
+                Nail Art Classes Available Upon Request
+              </h2>
+              <p className="font-sans text-base text-charcoal/70 sm:text-lg">
               Interested in learning nail art? Our private nail art classes are available upon request.
-              Message us on{" "}
+              {" "}
               <a
                 href="https://wa.me/message/VWIVVYAWNNR7N1"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline hover:text-burgundy"
               >
-                WhatsApp
+                Message us
               </a>{" "}
               to enquire about course details, availability, and pricing.
             </p>
-          </div>
+            </section>
+        
         ) : (
           <>
             <section className="flex flex-col gap-8">
@@ -127,10 +121,10 @@ export function PricelistContent() {
                 Nail Treatment
               </h2>
               <PriceTable
-                items={NAIL_TREATMENTS.map((t) => ({
+                items={treatments.map((t) => ({
                   label: t.name,
-                  note: t.note,
-                  price: priceLabel(t.priceMin, t.priceMax),
+                  note: t.note ?? undefined,
+                  price: priceLabel(t.price_min, t.price_max),
                 }))}
               />
             </section>
@@ -145,7 +139,7 @@ export function PricelistContent() {
                 </p>
               </div>
               <PriceTable
-                items={EXTENSIONS.map((e) => ({
+                items={extensions.map((e) => ({
                   label: e.name,
                   price: `+${formatIDR(e.price)}${e.unit === "per-nail" ? " / nail" : ""}`,
                 }))}
@@ -164,7 +158,7 @@ export function PricelistContent() {
                 </p>
               </div>
               <PriceTable
-                items={REMOVAL_FEES.map((r) => ({
+                items={removalFees.map((r) => ({
                   label: r.label,
                   price: `+${formatIDR(r.price)}`,
                 }))}
@@ -200,7 +194,7 @@ export function PricelistContent() {
               </div>
               <Link
                 href="/book"
-                className="rounded-full bg-cream px-10 py-4 font-sans text-lg font-medium text-maroon transition-colors hover:bg-cream-dark"
+                className="rounded-full bg-cream px-10 flex h-12 items-center font-sans text-lg font-medium text-maroon transition-colors hover:bg-cream-dark"
               >
                 Book now
               </Link>

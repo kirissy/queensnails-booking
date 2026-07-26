@@ -7,9 +7,9 @@ import type { BookingStatus } from "@/lib/supabase/types";
 export default async function BookingsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string; date?: string }>;
+  searchParams: Promise<{ status?: string; date?: string; search?: string }>;
 }) {
-  const { status, date } = await searchParams;
+  const { status, date, search } = await searchParams;
 
   if (!isSupabaseConfigured) {
     return (
@@ -51,6 +51,7 @@ export default async function BookingsPage({
         bookings={rows}
         initialStatus={status as BookingStatus | undefined}
         initialDate={date}
+        initialSearch={search}
       />
     </div>
   );

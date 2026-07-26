@@ -51,6 +51,36 @@ export type StudioSettingsRow = {
   google_calendar_id: string | null;
 };
 
+export type ExtensionUnit = "flat" | "per-nail";
+
+export type TreatmentRow = {
+  id: string;
+  name: string;
+  price_min: number;
+  price_max: number | null;
+  note: string | null;
+  bookable: boolean;
+  active: boolean;
+  sort_order: number;
+};
+
+export type ExtensionRow = {
+  id: string;
+  name: string;
+  price: number;
+  unit: ExtensionUnit;
+  active: boolean;
+  sort_order: number;
+};
+
+export type RemovalFeeRow = {
+  id: string;
+  label: string;
+  price: number;
+  active: boolean;
+  sort_order: number;
+};
+
 export type Database = {
   public: {
     Tables: {
@@ -81,6 +111,24 @@ export type Database = {
         Row: StudioSettingsRow;
         Insert: Partial<StudioSettingsRow>;
         Update: Partial<StudioSettingsRow>;
+        Relationships: [];
+      };
+      treatments: {
+        Row: TreatmentRow;
+        Insert: Partial<TreatmentRow> & Pick<TreatmentRow, "id" | "name" | "price_min">;
+        Update: Partial<TreatmentRow>;
+        Relationships: [];
+      };
+      extensions: {
+        Row: ExtensionRow;
+        Insert: Partial<ExtensionRow> & Pick<ExtensionRow, "id" | "name" | "price">;
+        Update: Partial<ExtensionRow>;
+        Relationships: [];
+      };
+      removal_fees: {
+        Row: RemovalFeeRow;
+        Insert: Partial<RemovalFeeRow> & Pick<RemovalFeeRow, "id" | "label" | "price">;
+        Update: Partial<RemovalFeeRow>;
         Relationships: [];
       };
     };

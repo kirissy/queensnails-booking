@@ -17,8 +17,15 @@ import {
 } from "@/lib/booking-draft";
 import { submitBooking } from "@/lib/submit-booking";
 import type { AvailabilityData } from "@/lib/get-availability-data";
+import type { PublicPricingData } from "@/lib/services-data";
 
-export function BookingWizard({ availability }: { availability: AvailabilityData }) {
+export function BookingWizard({
+  availability,
+  pricing,
+}: {
+  availability: AvailabilityData;
+  pricing: PublicPricingData;
+}) {
   const [step, setStep] = useState<BookingStep>("service");
   const [draft, setDraft] = useState<BookingDraft>(EMPTY_BOOKING_DRAFT);
   const [submitting, setSubmitting] = useState(false);
@@ -60,6 +67,7 @@ export function BookingWizard({ availability }: { availability: AvailabilityData
           treatmentId={draft.treatmentId}
           extensionId={draft.extensionId}
           removalRequested={draft.removalRequested}
+          pricing={pricing}
           onChange={(patch) => setDraft((d) => ({ ...d, ...patch }))}
           onNext={() => goTo("slot")}
         />
@@ -108,7 +116,7 @@ export function BookingWizard({ availability }: { availability: AvailabilityData
         />
       )}
 
-      {step === "confirmation" && <ConfirmationStep draft={draft} />}
+      {step === "confirmation" && <ConfirmationStep draft={draft} pricing={pricing} />}
     </div>
   );
 }

@@ -1,10 +1,11 @@
-import { NAIL_TREATMENTS, EXTENSIONS } from "@/lib/pricing";
 import { PricelistModal } from "@/components/PricelistModal";
+import type { PublicPricingData } from "@/lib/services-data";
 
 type Props = {
   treatmentId: string | null;
   extensionId: string | null;
   removalRequested: boolean;
+  pricing: PublicPricingData;
   onChange: (patch: {
     treatmentId?: string | null;
     extensionId?: string | null;
@@ -17,10 +18,12 @@ export function ServiceStep({
   treatmentId,
   extensionId,
   removalRequested,
+  pricing,
   onChange,
   onNext,
 }: Props) {
-  const treatment = NAIL_TREATMENTS.find((t) => t.id === treatmentId) ?? null;
+  const { treatments, extensions } = pricing;
+  const treatment = treatments.find((t) => t.id === treatmentId) ?? null;
   const canProceed = !!treatment && treatment.bookable;
 
   return (
@@ -32,12 +35,12 @@ export function ServiceStep({
         <p className="mt-1 font-sans text-sm text-charcoal/60">
           Pick one base service — this just lets us know what to prepare for.
           You can still change your mind with the owner in person. See the{" "}
-          <PricelistModal className="underline hover:text-burgundy" />.
+          <PricelistModal pricing={pricing} className="underline hover:text-burgundy" />.
         </p>
       </div>
 
       <div className="flex flex-col gap-2">
-        {NAIL_TREATMENTS.map((t) => (
+        {treatments.map((t) => (
           <button
             key={t.id}
             type="button"
@@ -84,7 +87,7 @@ export function ServiceStep({
           >
             None
           </button>
-          {EXTENSIONS.map((e) => (
+          {extensions.map((e) => (
             <button
               key={e.id}
               type="button"
@@ -134,7 +137,7 @@ export function ServiceStep({
           <p className="mt-2 font-sans text-xs text-charcoal/50">
             Noted — removal fees depend on your current nails and are
             confirmed with the owner. See the{" "}
-            <PricelistModal className="underline hover:text-burgundy" /> for
+            <PricelistModal pricing={pricing} className="underline hover:text-burgundy" /> for
             reference.
           </p>
         )}
