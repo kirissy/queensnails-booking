@@ -57,8 +57,7 @@ export function PricelistContent() {
           Services &amp; Pricing
         </h1>
         <p className="max-w-2xl font-sans text-base text-charcoal/70 sm:text-lg">
-          Prices listed are starting rates (minimum charges) as of July 2026
-          and are subject to change. Final pricing is determined on the day
+          Prices listed are starting rates (minimum charges) and are subject to change. Final pricing is determined on the day
           of the appointment based on the agreed design and any additional
           details discussed between the customer and the nail artist.
         </p>
