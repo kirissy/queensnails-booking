@@ -13,14 +13,14 @@ export async function GET(request: Request) {
 
   const code = new URL(request.url).searchParams.get("code");
   if (!code) {
-    return NextResponse.redirect(new URL("/admin/slots?google=missing_code", request.url));
+    return NextResponse.redirect(new URL("/admin?google=missing_code", request.url));
   }
 
   try {
     await saveGoogleAuthCode(code);
-    return NextResponse.redirect(new URL("/admin/slots?google=connected", request.url));
+    return NextResponse.redirect(new URL("/admin?google=connected", request.url));
   } catch (err) {
     console.error("[google callback]", err);
-    return NextResponse.redirect(new URL("/admin/slots?google=error", request.url));
+    return NextResponse.redirect(new URL("/admin?google=error", request.url));
   }
 }

@@ -32,7 +32,7 @@ Copy `.env.example` to `.env.local` and fill in as you go — each block below i
 1. In [Google Cloud Console](https://console.cloud.google.com), create an OAuth client (type "Web application") and enable the Google Calendar API.
 2. Add `GOOGLE_REDIRECT_URI` (e.g. `https://yourdomain.com/api/google/callback`) as an authorized redirect URI on that client.
 3. Fill in `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI`.
-4. As the studio owner, sign in to `/admin` and click **Connect** on the Slots page (`/admin/slots`) — this is `/api/google/connect`, which redirects to Google's consent screen and stores a refresh token in `studio_settings`.
+4. As the studio owner, sign in to `/admin` and click **Connect** on the Dashboard — this is `/api/google/connect`, which redirects to Google's consent screen and stores a refresh token in `studio_settings`.
 
 Without this, bookings are still confirmed and emailed — they just don't create a calendar event, and the owner's manual Google Calendar blocks won't affect site availability.
 
@@ -93,7 +93,7 @@ If `/admin` shows "Supabase isn't connected yet" on the live site but works fine
 - `src/lib/supabase/` — browser/server/admin Supabase clients. `admin.ts` uses the service role key and is server-only.
 - `src/lib/whatsapp.ts` — automated reservation message via the WhatsApp Cloud API, plus the plain `wa.me` click-to-chat helper used by the admin dashboard.
 - `src/app/book/` — the customer booking wizard (service → slot → details → policy → reserve → confirmation). Proof of payment is sent over WhatsApp, not uploaded on the site.
-- `src/app/admin/` — the owner's dashboard: deposit-verification queue (`/admin`, the default/landing view — this is the live workflow, not a fallback), bookings list, slot/calendar controls, all behind Supabase Auth (`src/proxy.ts` gates `/admin/*`). `/admin/forgot-password` → `/admin/auth/confirm` → `/admin/reset-password` is the self-serve password reset flow.
+- `src/app/admin/` — the owner's dashboard, all behind Supabase Auth (`src/proxy.ts` gates `/admin/*`). `/admin` is an overview: booking/revenue stats for the month, Google Calendar connect status, and a month calendar showing appointments, Google Calendar busy blocks, and per-day slot open/close controls (`day_overrides`). `/admin/bookings` lists every booking regardless of status with filter/sort/search and status-appropriate actions (confirm, reject, mark balance paid, no-show, cancel, reschedule) — deep-linkable via `?status=` / `?date=` from the Dashboard calendar. `/admin/forgot-password` → `/admin/auth/confirm` → `/admin/reset-password` is the self-serve password reset flow.
 - `supabase/migrations/` — schema: `bookings`, `day_overrides`, `studio_settings`, storage bucket for optional reference-photo uploads (not proof of payment, which never touches the site).
 - `src/lib/instagram.ts` — Instagram Graph API fetcher for the homepage post feed.
 - `public/logo.png` / `public/logo-white.png`, `public/icon.png` / `public/icon-white.png` — the real logo, trimmed and squared from the owner's source files; the white variants are derived from the same alpha channel for use on the burgundy header/footer.

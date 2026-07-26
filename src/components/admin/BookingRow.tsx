@@ -1,17 +1,20 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { formatIDR } from "@/lib/pricing";
 import { waChatLink } from "@/lib/whatsapp";
 import { SLOT_TIMES, type SlotTime } from "@/lib/availability";
 import {
   cancelBooking,
+  confirmBooking,
   markBalancePaid,
   markNoShow,
+  rejectBooking,
   rescheduleBooking,
 } from "@/app/admin/actions";
 import type { BookingStatus } from "@/lib/supabase/types";
 
-const STATUS_LABEL: Record<BookingStatus, string> = {
+export const STATUS_LABEL: Record<BookingStatus, string> = {
   pending_verification: "Pending Verification",
   confirmed: "Confirmed",
   rejected: "Rejected",
@@ -21,8 +24,19 @@ const STATUS_LABEL: Record<BookingStatus, string> = {
   cancelled: "Cancelled",
 };
 
-type Props = {
-  bookingId: string;
+const STATUS_BADGE: Record<BookingStatus, string> = {
+  pending_verification: "bg-gold/30 text-charcoal",
+  confirmed: "bg-rose-gold/25 text-rose-gold-dark",
+  completed: "bg-charcoal/10 text-charcoal/70",
+  no_show: "bg-burgundy/10 text-burgundy",
+  cancelled: "bg-charcoal/10 text-charcoal/50",
+  rejected: "bg-burgundy/10 text-burgundy",
+  expired: "bg-charcoal/10 text-charcoal/40",
+};
+
+export type BookingRowData = {
+  id: string;
+  createdAt: string;
   customerName: string;
   customerPhone: string;
   customerEmail: string;
@@ -31,25 +45,31 @@ type Props = {
   date: string;
   time: SlotTime;
   status: BookingStatus;
+  depositAmount: number;
   balancePaid: boolean;
   notes: string;
 };
 
-export function BookingRow({
-  bookingId,
-  customerName,
-  customerPhone,
-  customerEmail,
-  service,
-  removalRequested,
-  date,
-  time,
-  status,
-  balancePaid,
-  notes,
-}: Props) {
+export function BookingRow({ booking }: { booking: BookingRowData }) {
+  const {
+    id: bookingId,
+    customerName,
+    customerPhone,
+    customerEmail,
+    service,
+    removalRequested,
+    date,
+    time,
+    status,
+    depositAmount,
+    balancePaid,
+    notes,
+    createdAt,
+  } = booking;
+
   const [isPending, startTransition] = useTransition();
-  const [mode, setMode] = useState<"idle" | "balance" | "reschedule">("idle");
+  const [mode, setMode] = useState<"idle" | "reject" | "balance" | "reschedule">("idle");
+  const [reason, setReason] = useState("");
   const [surcharge, setSurcharge] = useState("");
   const [newDate, setNewDate] = useState(date);
   const [newTime, setNewTime] = useState<SlotTime>(time);
@@ -67,13 +87,13 @@ export function BookingRow({
     });
   }
 
-  const isActionable = status === "confirmed";
-
   return (
     <div className="flex flex-col gap-3 rounded-2xl border border-nude/60 bg-cream px-5 py-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h3 className="font-serif text-lg font-semibold text-charcoal">{customerName}</h3>
-        <span className="rounded-full bg-blush/50 px-3 py-1 font-sans text-xs text-charcoal/70">
+        <span
+          className={`rounded-full px-3 py-1 font-sans text-xs font-medium ${STATUS_BADGE[status]}`}
+        >
           {STATUS_LABEL[status]}
         </span>
       </div>
@@ -87,10 +107,24 @@ export function BookingRow({
           Removal requested
         </span>
       )}
+      {status === "pending_verification" && (
+        <p className="font-sans text-sm font-medium text-rose-gold-dark">
+          Deposit: {formatIDR(depositAmount)}
+        </p>
+      )}
       {notes && <p className="font-sans text-xs text-charcoal/50">Notes: {notes}</p>}
+      <p className="font-sans text-xs text-charcoal/40">
+        Booked {new Date(createdAt).toLocaleString()}
+      </p>
+
       <div className="flex flex-wrap gap-3 font-sans text-xs text-charcoal/60">
-        <a href={waChatLink(customerPhone)} target="_blank" rel="noopener noreferrer" className="underline hover:text-burgundy">
-          WhatsApp
+        <a
+          href={waChatLink(customerPhone)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-burgundy"
+        >
+          Message on WhatsApp
         </a>
         <a href={`mailto:${customerEmail}`} className="underline hover:text-burgundy">
           Email
@@ -99,7 +133,56 @@ export function BookingRow({
 
       {error && <p className="font-sans text-xs text-burgundy">{error}</p>}
 
-      {isActionable && mode === "idle" && (
+      {status === "pending_verification" && mode === "idle" && (
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            disabled={isPending}
+            onClick={() => setMode("reject")}
+            className="rounded-full border border-burgundy/40 px-4 py-1.5 font-sans text-xs font-medium text-burgundy disabled:opacity-50"
+          >
+            Reject
+          </button>
+          <button
+            type="button"
+            disabled={isPending}
+            onClick={() => run(() => confirmBooking(bookingId))}
+            className="flex-1 rounded-full bg-rose-gold px-4 py-1.5 font-sans text-xs font-medium text-cream hover:bg-rose-gold-dark disabled:opacity-50"
+          >
+            {isPending ? "Working…" : "Confirm"}
+          </button>
+        </div>
+      )}
+
+      {mode === "reject" && (
+        <div className="flex flex-col gap-2">
+          <input
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            placeholder="Reason (e.g. unclear screenshot, wrong amount)"
+            className="rounded-lg border border-nude/60 bg-cream-dark/30 px-3 py-2 font-sans text-sm text-charcoal outline-none focus:border-rose-gold"
+          />
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => setMode("idle")}
+              className="rounded-full border border-nude px-4 py-2 font-sans text-xs text-charcoal"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              disabled={isPending || !reason.trim()}
+              onClick={() => run(() => rejectBooking(bookingId, reason))}
+              className="flex-1 rounded-full bg-burgundy px-4 py-2 font-sans text-xs font-medium text-cream disabled:opacity-50"
+            >
+              Confirm Reject
+            </button>
+          </div>
+        </div>
+      )}
+
+      {status === "confirmed" && mode === "idle" && (
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
@@ -154,9 +237,7 @@ export function BookingRow({
             type="button"
             disabled={isPending}
             onClick={() =>
-              run(() =>
-                markBalancePaid(bookingId, surcharge ? Number(surcharge) : undefined)
-              )
+              run(() => markBalancePaid(bookingId, surcharge ? Number(surcharge) : undefined))
             }
             className="rounded-full bg-rose-gold px-4 py-1.5 font-sans text-xs font-medium text-cream"
           >

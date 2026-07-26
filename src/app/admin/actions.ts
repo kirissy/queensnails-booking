@@ -97,6 +97,7 @@ export async function markBalancePaid(bookingId: string, removalSurcharge?: numb
     })
     .eq("id", bookingId);
   if (error) throw new Error(error.message);
+  revalidatePath("/admin");
   revalidatePath("/admin/bookings");
 }
 
@@ -121,6 +122,7 @@ export async function markNoShow(bookingId: string) {
     );
   }
 
+  revalidatePath("/admin");
   revalidatePath("/admin/bookings");
 }
 
@@ -145,6 +147,7 @@ export async function cancelBooking(bookingId: string, reason?: string) {
     );
   }
 
+  revalidatePath("/admin");
   revalidatePath("/admin/bookings");
 }
 
@@ -158,6 +161,7 @@ export async function rescheduleBooking(bookingId: string, date: string, time: S
     if (error.code === "23505") throw new Error("That slot is already taken.");
     throw new Error(error.message);
   }
+  revalidatePath("/admin");
   revalidatePath("/admin/bookings");
   revalidatePath("/book");
 }
@@ -168,6 +172,6 @@ export async function setDayOverride(date: string, slots: SlotTime[] | "closed")
     .from("day_overrides")
     .upsert({ booking_date: date, slots: slots === "closed" ? [] : slots });
   if (error) throw new Error(error.message);
-  revalidatePath("/admin/slots");
+  revalidatePath("/admin");
   revalidatePath("/book");
 }

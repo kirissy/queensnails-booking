@@ -21,9 +21,8 @@ export default function AdminDashboardLayout({
 
       <nav className="flex gap-1 overflow-x-auto border-b border-nude/60 px-4 sm:px-8">
         {[
-          { href: "/admin", label: "Verification Queue" },
+          { href: "/admin", label: "Dashboard" },
           { href: "/admin/bookings", label: "Bookings" },
-          { href: "/admin/slots", label: "Slots" },
         ].map((item) => (
           <Link
             key={item.href}
