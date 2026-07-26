@@ -72,7 +72,7 @@ export function BookingRow({
   return (
     <div className="flex flex-col gap-3 rounded-2xl border border-nude/60 bg-cream px-5 py-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="font-serif text-lg text-charcoal">{customerName}</p>
+        <h3 className="font-serif text-lg font-semibold text-charcoal">{customerName}</h3>
         <span className="rounded-full bg-blush/50 px-3 py-1 font-sans text-xs text-charcoal/70">
           {STATUS_LABEL[status]}
         </span>

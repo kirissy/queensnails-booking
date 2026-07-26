@@ -26,7 +26,7 @@ export function ServiceStep({
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="font-serif text-xl text-charcoal">
+        <h2 className="font-serif text-xl font-semibold text-charcoal">
           Choose a Nail Treatment
         </h2>
         <p className="mt-1 font-sans text-sm text-charcoal/60">
@@ -66,7 +66,7 @@ export function ServiceStep({
       </div>
 
       <div>
-        <h3 className="font-serif text-lg text-charcoal">
+        <h3 className="font-serif text-lg font-semibold text-charcoal">
           Nail Extension{" "}
           <span className="font-sans text-xs font-normal text-charcoal/50">
             (optional add-on)
@@ -102,7 +102,7 @@ export function ServiceStep({
       </div>
 
       <div>
-        <h3 className="font-serif text-lg text-charcoal">Removal</h3>
+        <h3 className="font-serif text-lg font-semibold text-charcoal">Removal</h3>
         <p className="mt-1 font-sans text-xs text-charcoal/50">
           Do you need your current nails removed before this treatment?
         </p>

@@ -53,7 +53,7 @@ export function PricelistContent() {
   return (
     <div className="flex w-full flex-col gap-16 sm:gap-24 lg:gap-32">
       <div className="flex flex-col items-center gap-4 text-center">
-        <h1 className="font-sans text-3xl font-semibold text-charcoal sm:text-5xl">
+        <h1 className="font-sans text-3xl font-semibold text-charcoal sm:text-4xl lg:text-5xl">
           Services &amp; Pricing
         </h1>
         <p className="max-w-2xl font-sans text-base text-charcoal/70 sm:text-lg">
@@ -91,28 +91,29 @@ export function PricelistContent() {
 
         {tab === "course" ? (
           <div className="rounded-2xl border border-dashed border-blush-dark px-6 py-12 text-center">
-            <p className="font-sans text-lg font-medium text-charcoal">
-              Nail art classes are launching soon.
-            </p>
+            <h2 className="font-sans text-lg font-semibold text-charcoal">
+              Nail Art Classes Available Upon Request
+            </h2>
             <p className="mt-2 font-sans text-sm text-charcoal/70">
+              Interested in learning nail art? Our private nail art classes are available upon request.
               Message us on{" "}
               <a
-                href="https://instagram.com/queensnailsid"
+                href="https://wa.me/message/VWIVVYAWNNR7N1"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline hover:text-burgundy"
               >
-                Instagram
+                WhatsApp
               </a>{" "}
-              to be the first to know when they open.
+              to enquire about course details, availability, and pricing.
             </p>
           </div>
         ) : (
           <>
             <section className="flex flex-col gap-8">
-              <p className="font-sans text-xl font-medium text-charcoal sm:text-2xl">
+              <h2 className="font-sans text-xl font-semibold text-charcoal sm:text-2xl">
                 Included in Every Treatment
-              </p>
+              </h2>
               <PriceTable
                 items={INCLUDED_ITEMS.map((item) => ({
                   label: item,
@@ -122,9 +123,9 @@ export function PricelistContent() {
             </section>
 
             <section className="flex flex-col gap-8">
-              <p className="font-sans text-xl font-medium text-charcoal sm:text-2xl">
+              <h2 className="font-sans text-xl font-semibold text-charcoal sm:text-2xl">
                 Nail Treatment
-              </p>
+              </h2>
               <PriceTable
                 items={NAIL_TREATMENTS.map((t) => ({
                   label: t.name,
@@ -136,9 +137,9 @@ export function PricelistContent() {
 
             <section className="flex flex-col gap-8">
               <div>
-                <p className="font-sans text-xl font-medium text-charcoal sm:text-2xl">
+                <h2 className="font-sans text-xl font-semibold text-charcoal sm:text-2xl">
                   Nail Extension
-                </p>
+                </h2>
                 <p className="mt-2 font-sans text-base text-charcoal/70 sm:text-lg">
                   Optional add-on on top of a Nail Treatment.
                 </p>
@@ -153,9 +154,9 @@ export function PricelistContent() {
 
             <section className="flex flex-col gap-8">
               <div>
-                <p className="font-sans text-xl font-medium text-charcoal sm:text-2xl">
+                <h2 className="font-sans text-xl font-semibold text-charcoal sm:text-2xl">
                   Removal
-                </p>
+                </h2>
                 <p className="mt-2 font-sans text-base text-charcoal/70 sm:text-lg">
                   Not included by default. Depends on your current nails, so
                   these may apply and are confirmed with the owner — settled
@@ -171,17 +172,14 @@ export function PricelistContent() {
             </section>
 
             <section className="flex flex-col gap-3">
-              <p className="font-sans text-2xl font-medium text-charcoal sm:text-3xl">
+              <h2 className="font-sans text-2xl font-semibold text-charcoal sm:text-3xl">
                 Want something custom?
-              </p>
+              </h2>
               <p className="font-sans text-base text-charcoal/70 sm:text-lg">
-                Contact us for custom premium press-on nail orders — message
-                us on Instagram to confirm details and price. Want detailed
-                &ldquo;Other Design&rdquo; art instead? You can book that
-                online — we&apos;ll confirm the price with you afterward.
+                Contact us for custom premium press-on nail orders or detailed “Other Design” art on all 10 nails to confirm details and price before booking.
               </p>
               <a
-                href="https://instagram.com/queensnailsid"
+                href="https://wa.me/message/VWIVVYAWNNR7N1"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-fit font-sans text-base text-charcoal underline hover:text-burgundy sm:text-lg"
@@ -192,9 +190,9 @@ export function PricelistContent() {
 
             <section className="flex flex-col items-center gap-6 rounded-2xl bg-maroon px-6 py-10 text-center sm:px-10 sm:py-12">
               <div className="flex flex-col items-center gap-3">
-                <p className="font-sans text-2xl font-medium text-cream sm:text-3xl">
+                <h2 className="font-sans text-2xl font-semibold text-cream sm:text-3xl">
                   Ready to book your appointment?
-                </p>
+                </h2>
                 <p className="max-w-md font-sans text-base text-cream/80 sm:text-lg">
                   Limited appointments are available each day. Check our
                   availability and book your slot before it&apos;s gone.

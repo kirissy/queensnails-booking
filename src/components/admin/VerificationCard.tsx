@@ -58,7 +58,7 @@ export function VerificationCard({
   return (
     <div className="flex flex-col gap-2 rounded-2xl border border-nude/60 bg-cream p-5">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <p className="font-serif text-lg text-charcoal">{customerName}</p>
+        <h3 className="font-serif text-lg font-semibold text-charcoal">{customerName}</h3>
         <p className="font-sans text-xs text-charcoal/50">
           Reserved {new Date(submittedAt).toLocaleString()}
         </p>

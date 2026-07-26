@@ -77,7 +77,7 @@ export default function FaqPage() {
 
       <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-10 px-6 py-16 sm:px-10">
         <div className="text-center">
-          <h1 className="font-sans text-4xl font-semibold text-charcoal">
+          <h1 className="font-sans text-3xl font-semibold text-charcoal sm:text-4xl lg:text-5xl">
             Frequently Asked Questions
           </h1>
           <p className="mt-3 font-sans text-base text-charcoal/70">
@@ -95,9 +95,9 @@ export default function FaqPage() {
               key={faq.question}
               className="rounded-2xl border border-blush px-6 py-5"
             >
-              <p className="font-sans text-base font-semibold text-charcoal">
+              <h3 className="font-sans text-base font-semibold text-charcoal">
                 {faq.question}
-              </p>
+              </h3>
               <p className="mt-2 font-sans text-sm text-charcoal/70">
                 {faq.answer}
               </p>

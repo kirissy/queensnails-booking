@@ -52,7 +52,7 @@ export function DetailsStep({
       className="flex flex-col gap-6"
     >
       <div>
-        <h2 className="font-serif text-xl text-charcoal">Your Details</h2>
+        <h2 className="font-serif text-xl font-semibold text-charcoal">Your Details</h2>
         <p className="mt-1 font-sans text-sm text-charcoal/60">
           We&apos;ll use these to confirm your appointment.
         </p>

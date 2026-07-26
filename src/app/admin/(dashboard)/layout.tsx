@@ -12,7 +12,7 @@ export default function AdminDashboardLayout({
       <header className="flex items-center justify-between border-b border-nude/60 px-6 py-4 sm:px-8">
         <span className="flex items-center gap-2">
           <Image src="/icon.png" alt="" width={512} height={512} className="h-7 w-7" />
-          <span className="font-serif text-xl text-charcoal">
+          <span className="font-serif text-xl font-semibold text-charcoal">
             queensnails <span className="text-charcoal/40">admin</span>
           </span>
         </span>

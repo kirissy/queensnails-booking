@@ -24,7 +24,7 @@ export default async function BookingsPage() {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <h1 className="font-serif text-2xl text-charcoal">Bookings</h1>
+        <h1 className="font-serif text-2xl font-semibold text-charcoal">Bookings</h1>
         <p className="mt-1 font-sans text-sm text-charcoal/60">
           Confirmed and past appointments.
         </p>

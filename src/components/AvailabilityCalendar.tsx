@@ -85,7 +85,7 @@ export function AvailabilityCalendar({
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
-        <p className="font-serif text-lg text-charcoal">
+        <p className="font-serif text-lg font-semibold text-charcoal">
           {format(month, "MMMM yyyy")}
         </p>
         <button

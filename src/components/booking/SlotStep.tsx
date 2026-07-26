@@ -15,7 +15,7 @@ export function SlotStep({ date, time, availability, onChange, onNext, onBack }:
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="font-serif text-xl text-charcoal">
+        <h2 className="font-serif text-xl font-semibold text-charcoal">
           Choose a Date &amp; Time
         </h2>
         <p className="mt-1 font-sans text-sm text-charcoal/60">

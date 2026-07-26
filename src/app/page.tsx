@@ -51,7 +51,7 @@ export default async function Home() {
         <section id="hours" className="grid w-full scroll-mt-8 grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-20">
           <div className="flex flex-col gap-10">
             <div>
-              <h2 className="font-sans text-3xl font-semibold text-charcoal sm:text-5xl">
+              <h2 className="font-sans text-xl font-semibold text-charcoal sm:text-2xl">
                 Address
               </h2>
               <p className="mt-3 font-sans text-base text-charcoal/80">
@@ -59,7 +59,7 @@ export default async function Home() {
               </p>
             </div>
             <div>
-              <h2 className="font-sans text-3xl font-semibold text-charcoal sm:text-5xl">
+              <h2 className="font-sans text-xl font-semibold text-charcoal sm:text-2xl">
                 Opening hours
               </h2>
               <p className="mt-3 font-sans text-base text-charcoal/80">

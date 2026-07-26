@@ -19,7 +19,7 @@ export function ConfirmationStep({ draft }: Props) {
         <p className="font-sans text-xs uppercase tracking-[0.3em] text-burgundy">
           Reserved
         </p>
-        <h2 className="mt-2 font-serif text-2xl text-charcoal">
+        <h2 className="mt-2 font-serif text-xl font-semibold text-charcoal">
           Your slot is held for 60 minutes!
         </h2>
         <p className="mt-2 font-sans text-sm text-charcoal/70">

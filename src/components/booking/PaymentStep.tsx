@@ -14,7 +14,7 @@ export function PaymentStep({ submitting, error, onSubmit, onBack }: Props) {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="font-serif text-xl text-charcoal">Reserve Your Slot</h2>
+        <h2 className="font-serif text-xl font-semibold text-charcoal">Reserve Your Slot</h2>
         <p className="mt-1 font-sans text-sm text-charcoal/60">
           Reserving holds your slot for 60 minutes. Transfer the deposit and
           send your payment proof on WhatsApp to confirm.
@@ -26,7 +26,7 @@ export function PaymentStep({ submitting, error, onSubmit, onBack }: Props) {
           <span className="font-sans text-sm text-charcoal/70">
             Deposit amount
           </span>
-          <span className="font-serif text-lg text-charcoal">
+          <span className="font-serif text-lg font-semibold text-charcoal">
             {formatIDR(DEPOSIT_AMOUNT)}
           </span>
         </div>
