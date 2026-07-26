@@ -31,10 +31,18 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const isAdminRoute = request.nextUrl.pathname.startsWith("/admin");
-  const isLoginRoute = request.nextUrl.pathname === "/admin/login";
+  const { pathname } = request.nextUrl;
+  const isAdminRoute = pathname.startsWith("/admin");
+  const isLoginRoute = pathname === "/admin/login";
+  // Reachable without an existing session: signing in, requesting a reset
+  // email, and the reset-link callback that exchanges a code for a session.
+  const isPublicAdminRoute =
+    isLoginRoute ||
+    pathname === "/admin/forgot-password" ||
+    pathname === "/admin/reset-password" ||
+    pathname.startsWith("/admin/auth/");
 
-  if (isAdminRoute && !isLoginRoute && !user) {
+  if (isAdminRoute && !isPublicAdminRoute && !user) {
     return NextResponse.redirect(new URL("/admin/login", request.url));
   }
   if (isLoginRoute && user) {

@@ -25,6 +25,7 @@ Copy `.env.example` to `.env.local` and fill in as you go — each block below i
 2. Run the SQL files in `supabase/migrations/` against it, in order (SQL Editor, or `supabase db push` if you link the CLI).
 3. Fill in `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` from Project Settings → API.
 4. Create the owner's admin login: Authentication → Users → Add user (email + password). There's no self-signup flow by design — it's a single admin account.
+5. Under Authentication → URL Configuration, add `<your-site-url>/admin/auth/confirm` (and `http://localhost:3000/admin/auth/confirm` for local dev) to **Redirect URLs** — required for the "Forgot password?" flow on `/admin/login` to work; without it Supabase rejects the reset link's redirect.
 
 ### Google Calendar (optional — two-way sync)
 
@@ -92,7 +93,7 @@ If `/admin` shows "Supabase isn't connected yet" on the live site but works fine
 - `src/lib/supabase/` — browser/server/admin Supabase clients. `admin.ts` uses the service role key and is server-only.
 - `src/lib/whatsapp.ts` — automated reservation message via the WhatsApp Cloud API, plus the plain `wa.me` click-to-chat helper used by the admin dashboard.
 - `src/app/book/` — the customer booking wizard (service → slot → details → policy → reserve → confirmation). Proof of payment is sent over WhatsApp, not uploaded on the site.
-- `src/app/admin/` — the owner's dashboard: deposit-verification queue (`/admin`, the default/landing view — this is the live workflow, not a fallback), bookings list, slot/calendar controls, all behind Supabase Auth (`src/proxy.ts` gates `/admin/*`).
+- `src/app/admin/` — the owner's dashboard: deposit-verification queue (`/admin`, the default/landing view — this is the live workflow, not a fallback), bookings list, slot/calendar controls, all behind Supabase Auth (`src/proxy.ts` gates `/admin/*`). `/admin/forgot-password` → `/admin/auth/confirm` → `/admin/reset-password` is the self-serve password reset flow.
 - `supabase/migrations/` — schema: `bookings`, `day_overrides`, `studio_settings`, storage bucket for optional reference-photo uploads (not proof of payment, which never touches the site).
 - `src/lib/instagram.ts` — Instagram Graph API fetcher for the homepage post feed.
 - `public/logo.png` / `public/logo-white.png`, `public/icon.png` / `public/icon-white.png` — the real logo, trimmed and squared from the owner's source files; the white variants are derived from the same alpha channel for use on the burgundy header/footer.
